@@ -17,7 +17,7 @@ class AuthController extends Controller
     /**
      * Return CSRF Token
      *
-     * @Route("/login-generate-token", name="login-generate-token")
+     * @Route("/login-generate-token/", name="login-generate-token")
      */
     public function generateTokerAction()
     {
