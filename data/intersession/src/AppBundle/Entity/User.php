@@ -35,4 +35,8 @@ class User extends BaseUser implements JsonSerializable
             )
         );
     }
+
+    public function getRelations() {
+        return array();
+    }
 }
