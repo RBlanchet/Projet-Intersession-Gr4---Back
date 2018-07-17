@@ -6,6 +6,10 @@
  config.vm.synced_folder ".", "/vagrant", disabled: true
  config.vm.network "private_network", ip: "192.168.33.10"
  config.vm.network "forwarded_port", guest: 8000, host: 8000
+ config.vm.provider "virtualbox" do |vb|  
+  # Customize the amount of memory on the VM:
+  vb.memory = "2048"
+ end
  config.vm.provision "shell", path: "setup.sh"
  if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :machine
