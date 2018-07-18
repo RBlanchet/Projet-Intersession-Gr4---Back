@@ -1,4 +1,5 @@
 
+
 echo "
  ____________________________________
 |                                    |
@@ -70,7 +71,33 @@ composer -V
 
 cd /var/www/html
 
-composer create-project symfony/framework-standard-edition intersession "3.4.*"
+echo "
+ ____________________________________
+|                                    |
+|              SYMFONY               |
+ ____________________________________
+"
+
+echo " *** INSTALL SYMFONY  *** "
+
+#@composer create-project symfony/framework-standard-edition intersession "3.4.*"
+
+cd /var/www/html/intersession
+
+composer install
+
+
+echo "
+ ____________________________________
+|                                    |
+|              SETUP                 |
+ ____________________________________
+"
+
+echo " *** RESTART APACHE2  *** "
+
+# On ajoute vagrant aux users
+sudo adduser vagrant www-data
 
 # On active le mode Rewrite
 sudo a2enmod rewrite
