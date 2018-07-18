@@ -27,8 +27,9 @@ class User extends BaseUser implements JsonSerializable
      */
     private $projects;
 
+
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Task", mappedBy="tasks")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Task", mappedBy="users")
      */
     private $tasks;
 
@@ -102,5 +103,135 @@ class User extends BaseUser implements JsonSerializable
 
     public function getRelations() {
         return array();
+    }
+
+    /**
+     * Add project.
+     *
+     * @param \AppBundle\Entity\Project $project
+     *
+     * @return User
+     */
+    public function addProject(\AppBundle\Entity\Project $project)
+    {
+        $this->projects[] = $project;
+
+        return $this;
+    }
+
+    /**
+     * Remove project.
+     *
+     * @param \AppBundle\Entity\Project $project
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeProject(\AppBundle\Entity\Project $project)
+    {
+        return $this->projects->removeElement($project);
+    }
+
+    /**
+     * Add task.
+     *
+     * @param \AppBundle\Entity\Task $task
+     *
+     * @return User
+     */
+    public function addTask(\AppBundle\Entity\Task $task)
+    {
+        $this->tasks[] = $task;
+
+        return $this;
+    }
+
+    /**
+     * Remove task.
+     *
+     * @param \AppBundle\Entity\Task $task
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeTask(\AppBundle\Entity\Task $task)
+    {
+        return $this->tasks->removeElement($task);
+    }
+
+    /**
+     * Add protectedRole.
+     *
+     * @param \AppBundle\Entity\Role $protectedRole
+     *
+     * @return User
+     */
+    public function addProtectedRole(\AppBundle\Entity\Role $protectedRole)
+    {
+        $this->protectedRoles[] = $protectedRole;
+
+        return $this;
+    }
+
+    /**
+     * Remove protectedRole.
+     *
+     * @param \AppBundle\Entity\Role $protectedRole
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeProtectedRole(\AppBundle\Entity\Role $protectedRole)
+    {
+        return $this->protectedRoles->removeElement($protectedRole);
+    }
+
+    /**
+     * Add job.
+     *
+     * @param \AppBundle\Entity\Job $job
+     *
+     * @return User
+     */
+    public function addJob(\AppBundle\Entity\Job $job)
+    {
+        $this->jobs[] = $job;
+
+        return $this;
+    }
+
+    /**
+     * Remove job.
+     *
+     * @param \AppBundle\Entity\Job $job
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeJob(\AppBundle\Entity\Job $job)
+    {
+        return $this->jobs->removeElement($job);
+    }
+
+    /**
+     * Add meeting.
+     *
+     * @param \AppBundle\Entity\Meeting $meeting
+     *
+     * @return User
+     */
+    public function addMeeting(\AppBundle\Entity\Meeting $meeting)
+    {
+        $this->meetings[] = $meeting;
+
+        return $this;
+    }
+
+    /**
+     * Remove meeting.
+     *
+     * @param \AppBundle\Entity\Meeting $meeting
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeMeeting(\AppBundle\Entity\Meeting $meeting)
+    {
+        return $this->meetings->removeElement($meeting);
     }
 }
