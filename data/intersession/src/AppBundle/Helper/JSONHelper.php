@@ -50,32 +50,68 @@ final class JSONHelper
     public function normalizeJSON($entityArray) {
         $jsonNormalize = array();
         foreach ($entityArray as $key => $value) {
-            $allId = array();
-            foreach ($value as $v) {
-                array_push($allId, $key . $v->getId());
-            }
-            $jsonNormalize[$key] = array(
-                'byId'  => $value,
-                'allId' => $allId
-            );
-            // Each on entity
-            foreach ($value as $element) {
-                // Get relation on current Entity
-                foreach ($element->getRelations() as $entityKey => $entityValue) {
-                    // If AllId and ById not exist, create
-                    if (!isset($jsonNormalize[$entityKey])) {
-                        $jsonNormalize[$entityKey]['byId'] = array();
-                        $jsonNormalize[$entityKey]['allId'] = array();
+            if ($value) {
+                $allId = array();
+                if (is_array($value)) {
+                    foreach ($value as $v) {
+                        array_push($allId, $key . $v->getId());
                     }
-                    // If not in array, insert
-                    if (!in_array($entityKey . $entityValue->getId(), $jsonNormalize[$entityKey]['allId'])){
-                        array_push($jsonNormalize[$entityKey]['byId'], $entityValue);
-                        array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $entityValue->getId());
+                } else {
+                    array_push($allId, $key . $value->getId());
+                }
+                $jsonNormalize[$key] = array(
+                    'byId'  => $value,
+                    'allId' => $allId
+                );
+                // Each on entity
+                if (is_array($value)) {
+                    foreach ($value as $element) {
+                        // Get relation on current Entity
+                        foreach ($element->getRelations() as $entityKey => $entityValue) {
+                            // If AllId and ById not exist, create
+                            if (!isset($jsonNormalize[$entityKey])) {
+                                $jsonNormalize[$entityKey]['byId'] = array();
+                                $jsonNormalize[$entityKey]['allId'] = array();
+                            }
+                            // If not in array, insert
+                            if (!in_array($entityKey . $entityValue->getId(), $jsonNormalize[$entityKey]['allId'])){
+                                array_push($jsonNormalize[$entityKey]['byId'], $entityValue);
+                                array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $entityValue->getId());
+                            }
+                        }
+                    }
+                } else {
+                    // Get relation on current Entity
+                    foreach ($value->getRelations() as $entityKey => $entityValue) {
+
+                        // If AllId and ById not exist, create
+                        if (!isset($jsonNormalize[$entityKey])) {
+                            $jsonNormalize[$entityKey]['byId'] = array();
+                            $jsonNormalize[$entityKey]['allId'] = array();
+                        }
+                        // If not in array, insert
+                        if (is_object($entityValue)) {
+                            foreach ($entityValue as $eValue) {
+                                if (!in_array($entityKey . $eValue->getId(), $jsonNormalize[$entityKey]['allId'])){
+                                    array_push($jsonNormalize[$entityKey]['byId'], $eValue);
+                                    array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $eValue->getId());
+                                }
+                            }
+                        } else {
+                            if (!in_array($entityKey . $entityValue->getId(), $jsonNormalize[$entityKey]['allId'])){
+                                array_push($jsonNormalize[$entityKey]['byId'], $entityValue);
+                                array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $entityValue->getId());
+                            }
+                        }
+
                     }
                 }
-            }
-        }
 
+            } else {
+                $jsonNormalize = null;
+            }
+
+        }
         return $jsonNormalize;
     }
 
