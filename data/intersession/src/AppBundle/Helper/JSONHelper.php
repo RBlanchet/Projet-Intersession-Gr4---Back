@@ -54,10 +54,10 @@ final class JSONHelper
                 $allId = array();
                 if (is_array($value)) {
                     foreach ($value as $v) {
-                        array_push($allId, $key . $v->getId());
+                        array_push($allId,  substr($key, 0, -1) . $v->getId());
                     }
                 } else {
-                    array_push($allId, $key . $value->getId());
+                    array_push($allId, substr($key, 0, -1) . $value->getId());
                 }
                 $jsonNormalize[$key] = array(
                     'byId'  => $value,
