@@ -3,34 +3,38 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
- * Class Job
  * @ORM\Entity
  * @ORM\Table(name="jobs")
  */
-class Job {
 
+class Job
+{
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="jobs")
+     * @ORM\Column(type="string", length=255)
      */
-    private $user;
+    private $name;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="datetime")
      */
-    private $cost;
+    private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="jobs")
+     * @ORM\Column(type="integer")
      */
-    private $role;
+    private $createdBy;
+
 }

@@ -23,7 +23,7 @@ class User extends BaseUser implements JsonSerializable
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedby="admin")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedBy="admin")
      */
     private $projects;
 
@@ -33,12 +33,23 @@ class User extends BaseUser implements JsonSerializable
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Job", mappedby="user")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role", inversedBy="users")
+     */
+    private $roles;
+
+    /**
+     * @ManyToMany(targetEntity="AppBundle\Entity\Job")
+     * @JoinTable(name="users_jobs",
+     *      joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="job_id", referencedColumnName="id")}
+     *      )
      */
     private $jobs;
 
-
-
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="users")
+     */
+    private $meetings;
 
     public function __construct()
     {
@@ -48,24 +59,35 @@ class User extends BaseUser implements JsonSerializable
         $this->projects = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         $this->jobs = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
 
     public function getProjects(): Collection
     {
         return $this->projects;
     }
+
     public function getTasks(): Collection
     {
         return $this->tasks;
     }
+
     public function getJobs(): Collection
     {
         return $this->jobs;
     }
 
-    /**
-     * @return array|mixed
-     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
     public function jsonSerialize()
     {
         return array(

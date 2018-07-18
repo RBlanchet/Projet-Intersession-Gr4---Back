@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity
@@ -19,22 +21,22 @@ class Meeting
     private $id;
 
     /**
-     * @ORM\Column(type="string" length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string" length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $organiser;
 
     /**
-     * @ORM\Column(type="string" length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $location;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $timeSpend;
 
@@ -49,7 +51,7 @@ class Meeting
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="timestamp")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
@@ -57,4 +59,16 @@ class Meeting
      * @ORM\Column(type="integer")
      */
     private $createdBy;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="meetings"
+     * @JoinTable(name="users_meetings")
+     */
+    private $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
 }

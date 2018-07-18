@@ -1,6 +1,6 @@
 <?php
 // src/Entity/Sprint.php
-namespace BundleEntity;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +21,7 @@ class Sprint
     private $id;
 
     /**
-     * @ORM\Column(type="string" length=255
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
 
@@ -36,7 +36,7 @@ class Sprint
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="timestamp")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 

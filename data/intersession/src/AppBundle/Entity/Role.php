@@ -2,56 +2,46 @@
 // src/AppBundle/Entity/Role.php
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
+ * Class Job
  * @ORM\Entity
  * @ORM\Table(name="roles")
  */
+class Role {
 
-class Role
-{
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string" length=255)
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="roles")
      */
-    private $name;
+    private $users;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $projectId;
+    private $project;
 
     /**
-     * @ORM\Column(type="timestamp")
+     * @ORM\Column(type="float")
      */
-    private $createdAt;
+    private $cost;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
      */
-    private $createdBy;
+    private $job;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Job", mappedby="role")
-     */
-    private $jobs;
-
-    public function __construct()
-    {
-        $this->jobs = new ArrayCollection();
-    }
-
-    public function getJobs(): Collection
-    {
-        return $this->jobs;
+    public function __construct() {
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 }

@@ -20,12 +20,12 @@ class Task {
     private $id;
 
     /**
-     * @ORM\Column(type="string" length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $cost;
 
@@ -45,7 +45,7 @@ class Task {
     private $status;
 
     /**
-     * @ORM\Column(type="timestamp")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
@@ -55,7 +55,7 @@ class Task {
     private $createdBy;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $timeSpend;
 
@@ -75,7 +75,7 @@ class Task {
     private $sprint;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", invertedBy="tasks")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="tasks")
      * @ORM\JoinTable(name="users_tasks")
      */
     private $users;

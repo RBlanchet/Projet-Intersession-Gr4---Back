@@ -30,17 +30,17 @@ class Project
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="projects")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="projects")
      */
     private $admin;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $price;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $cost;
 
@@ -55,17 +55,17 @@ class Project
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $hourPool;
 
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $hourSpend;
 
     /**
-     * @ORM\Column(type="timestamp")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
