@@ -23,7 +23,8 @@ class Role {
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="protectedRoles")
-     */
+    */
+
     private $users;
 
     /**

@@ -35,6 +35,7 @@ class User extends BaseUser implements JsonSerializable
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role", inversedBy="users")
      */
+
     private $protectedRoles;
 
     /**
@@ -80,9 +81,10 @@ class User extends BaseUser implements JsonSerializable
 
     public function getProtectedRoles(): Collection
     {
-        return $this->protectedRoles;
-    }
 
+        return $this->protectedRoles;
+
+    }
     public function getMeetings(): Collection
     {
         return $this->meetings;

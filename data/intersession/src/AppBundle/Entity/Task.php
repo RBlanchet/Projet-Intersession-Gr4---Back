@@ -80,15 +80,35 @@ class Task {
      */
     private $users;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Task", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="parent")
+     */
+    private $children;
+
+
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getUsers(): Collection
     {
         return $this->users;
     }
+
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
     public function addUser(User $user)
     {
         $user->addTask($this);
