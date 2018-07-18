@@ -35,13 +35,13 @@ class User extends BaseUser implements JsonSerializable
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role", inversedBy="users")
      */
-    private $roles;
+    private $protectedRoles;
 
     /**
-     * @ManyToMany(targetEntity="AppBundle\Entity\Job")
-     * @JoinTable(name="users_jobs",
-     *      joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="job_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Job")
+     * @ORM\JoinTable(name="users_jobs",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="id")}
      *      )
      */
     private $jobs;
@@ -59,7 +59,7 @@ class User extends BaseUser implements JsonSerializable
         $this->projects = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         $this->jobs = new ArrayCollection();
-        $this->roles = new ArrayCollection();
+        $this->protectedRoles = new ArrayCollection();
         $this->meetings = new ArrayCollection();
     }
 
@@ -78,9 +78,9 @@ class User extends BaseUser implements JsonSerializable
         return $this->jobs;
     }
 
-    public function getRoles(): Collection
+    public function getProtectedRoles(): Collection
     {
-        return $this->roles;
+        return $this->protectedRoles;
     }
 
     public function getMeetings(): Collection

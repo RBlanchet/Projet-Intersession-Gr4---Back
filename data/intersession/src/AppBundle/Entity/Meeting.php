@@ -61,8 +61,8 @@ class Meeting
     private $createdBy;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="meetings"
-     * @JoinTable(name="users_meetings")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="meetings")
+     * @ORM\JoinTable(name="users_meetings")
      */
     private $users;
 
