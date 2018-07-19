@@ -14,6 +14,9 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class JSONHelper
@@ -47,72 +50,17 @@ final class JSONHelper
      * @param $entityArray
      * @return array
      */
-    public function normalizeJSON($entityArray) {
-        $jsonNormalize = array();
-        foreach ($entityArray as $key => $value) {
-            if ($value) {
-                $allId = array();
-                if (is_array($value)) {
-                    foreach ($value as $v) {
-                        array_push($allId,  substr($key, 0, -1) . $v->getId());
-                    }
-                } else {
-                    array_push($allId, substr($key, 0, -1) . $value->getId());
-                }
-                $jsonNormalize[$key] = array(
-                    'byId'  => $value,
-                    'allId' => $allId
-                );
-                // Each on entity
-                if (is_array($value)) {
-                    foreach ($value as $element) {
-                        // Get relation on current Entity
-                        foreach ($element->getRelations() as $entityKey => $entityValue) {
-                            // If AllId and ById not exist, create
-                            if (!isset($jsonNormalize[$entityKey])) {
-                                $jsonNormalize[$entityKey]['byId'] = array();
-                                $jsonNormalize[$entityKey]['allId'] = array();
-                            }
-                            // If not in array, insert
-                            if (!in_array($entityKey . $entityValue->getId(), $jsonNormalize[$entityKey]['allId'])){
-                                array_push($jsonNormalize[$entityKey]['byId'], $entityValue);
-                                array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $entityValue->getId());
-                            }
-                        }
-                    }
-                } else {
-                    // Get relation on current Entity
-                    foreach ($value->getRelations() as $entityKey => $entityValue) {
+    public function normalizeJSON($obj) {
+        $encoder = new JsonEncoder();
+        $normalizer = new JsonSerializableNormalizer();
 
-                        // If AllId and ById not exist, create
-                        if (!isset($jsonNormalize[$entityKey])) {
-                            $jsonNormalize[$entityKey]['byId'] = array();
-                            $jsonNormalize[$entityKey]['allId'] = array();
-                        }
-                        // If not in array, insert
-                        if (is_object($entityValue)) {
-                            foreach ($entityValue as $eValue) {
-                                if (!in_array($entityKey . $eValue->getId(), $jsonNormalize[$entityKey]['allId'])){
-                                    array_push($jsonNormalize[$entityKey]['byId'], $eValue);
-                                    array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $eValue->getId());
-                                }
-                            }
-                        } else {
-                            if (!in_array($entityKey . $entityValue->getId(), $jsonNormalize[$entityKey]['allId'])){
-                                array_push($jsonNormalize[$entityKey]['byId'], $entityValue);
-                                array_push($jsonNormalize[$entityKey]['allId'], $entityKey . $entityValue->getId());
-                            }
-                        }
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
 
-                    }
-                }
+        $serializer = new Serializer(array($normalizer), array($encoder));
 
-            } else {
-                $jsonNormalize = null;
-            }
-
-        }
-        return $jsonNormalize;
+        return $serializer->serialize($obj, 'json');
     }
 
 }

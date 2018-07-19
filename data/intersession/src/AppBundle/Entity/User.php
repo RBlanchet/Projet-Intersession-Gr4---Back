@@ -40,11 +40,7 @@ class User extends BaseUser implements JsonSerializable
     private $protectedRoles;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
-     * @ORM\JoinTable(name="users_jobs",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="id")}
-     *      )
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job", inversedBy="users")
      */
     private $jobs;
 
@@ -60,7 +56,6 @@ class User extends BaseUser implements JsonSerializable
 
         $this->projects = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->jobs = new ArrayCollection();
         $this->protectedRoles = new ArrayCollection();
         $this->meetings = new ArrayCollection();
     }
@@ -75,7 +70,7 @@ class User extends BaseUser implements JsonSerializable
         return $this->tasks;
     }
 
-    public function getJobs(): Collection
+    public function getJobs()
     {
         return $this->jobs;
     }
@@ -105,11 +100,11 @@ class User extends BaseUser implements JsonSerializable
 
     public function getRelations() {
         return array(
-            'projects'      => $this->getProjects(),
-            'tasks'         => $this->getTasks(),
-            'protectedRoles'  => $this->getProtectedRoles(),
-            'jobs'          => $this->getJobs(),
-            'meetings'      => $this->getMeetings()
+            'projects'          => $this->getProjects(),
+            'tasks'             => $this->getTasks(),
+            'protectedRoles'    => $this->getProtectedRoles(),
+            'jobs'              => $this->getJobs(),
+            'meetings'          => $this->getMeetings()
         );
     }
 
