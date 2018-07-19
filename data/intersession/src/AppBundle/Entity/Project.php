@@ -96,6 +96,10 @@ class Project
      */
     private $users;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="project")
+     */
+    private $meetings;
 
 
     public function __construct()
@@ -103,6 +107,7 @@ class Project
         $this->tasks = new ArrayCollection();
         $this->sprints = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
     }
     public function jsonSerialize()
     {
@@ -520,5 +525,41 @@ class Project
     public function removeUser(\AppBundle\Entity\User $user)
     {
         return $this->users->removeElement($user);
+    }
+
+    /**
+     * Add meeting.
+     *
+     * @param \AppBundle\Entity\Meeting $meeting
+     *
+     * @return Project
+     */
+    public function addMeeting(\AppBundle\Entity\Meeting $meeting)
+    {
+        $this->meetings[] = $meeting;
+
+        return $this;
+    }
+
+    /**
+     * Remove meeting.
+     *
+     * @param \AppBundle\Entity\Meeting $meeting
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeMeeting(\AppBundle\Entity\Meeting $meeting)
+    {
+        return $this->meetings->removeElement($meeting);
+    }
+
+    /**
+     * Get meetings.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMeetings()
+    {
+        return $this->meetings;
     }
 }

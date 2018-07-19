@@ -71,7 +71,7 @@ class Meeting
     private $active;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project", inversedBy="meetings")
      */
     private $project;
 
@@ -388,5 +388,29 @@ class Meeting
     public function removeUser(\AppBundle\Entity\User $user)
     {
         return $this->users->removeElement($user);
+    }
+
+    /**
+     * Set project.
+     *
+     * @param \AppBundle\Entity\Project|null $project
+     *
+     * @return Meeting
+     */
+    public function setProject(\AppBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project.
+     *
+     * @return \AppBundle\Entity\Project|null
+     */
+    public function getProject()
+    {
+        return $this->project;
     }
 }
