@@ -95,11 +95,10 @@ class User extends BaseUser implements JsonSerializable
     {
         return array(
             'user' . $this->id => array(
-
-                'id'                => $this->getId(),
-                'username'          => $this->getUsername(),
-                'protectedRoles'    => $this->getProtectedRoles(),
-                'email'             => $this->getEmail()
+            'id'                => $this->getId(),
+            'username'          => $this->getUsername(),
+            'protectedRoles'    => $this->getProtectedRoles(),
+            'email'             => $this->getEmail(),
             )
         );
     }

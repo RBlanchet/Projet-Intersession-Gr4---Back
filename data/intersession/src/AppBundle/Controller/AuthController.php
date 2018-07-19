@@ -8,16 +8,16 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /**
      * Return CSRF Token
      *
-     * @Route("/login-generate-token/", name="login-generate-token")
+     * @Route("/login-generate-token", name="login-generate-token")
      */
     public function generateTokerAction()
     {
@@ -25,6 +25,24 @@ class AuthController extends Controller
 
         return new Response($csrf);
 
+    }
+
+    /**
+     * Return CSRF Token
+     *
+     * @Route("/me", name="me")
+     */
+    public function getMe()
+    {
+        $user = $this->getUser();
+        if ($user) {
+            $jsonNormalize = $this->JSONHelper->normalizeJSON(array(
+                'users' => $user
+            ));
+            return new Response(json_encode($jsonNormalize), 200);
+        } else {
+            return new Response(null, 404);
+        }
     }
 
 }
