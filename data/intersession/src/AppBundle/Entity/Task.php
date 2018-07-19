@@ -25,6 +25,11 @@ class Task {
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $description;
+
+    /**
      * @ORM\Column(type="float")
      */
     private $cost;
@@ -98,7 +103,33 @@ class Task {
         $this->users = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
+    public function jsonSerialize()
+    {
+        return array(
+            'project' . $this->id => array(
+                'id'            => $this->id,
+                'project'       => $this->project,
+                'name'          => $this->name,
+                'cost'          => $this->cost,
+                'sprint'        => $this->sprint,
+                'description'   => $this->description,
+                'timeSpend'     => $this->timeSpend,
+                'dateStart'     => $this->dateStart,
+                'dateEnd'       => $this->dateEnd,
+                'isActive'      => $this->active,
+                'status'        => $this->status,
+                'parent'        => $this->parent,
+            )
+        );
+    }
 
+    public function getRelations()
+    {
+        return array(
+            'children'      => $this->getChildren(),
+            'users'         => $this->getUsers(),
+        );
+    }
     public function getUsers(): Collection
     {
         return $this->users;
@@ -450,5 +481,29 @@ class Task {
     public function removeChild(\AppBundle\Entity\Task $child)
     {
         return $this->children->removeElement($child);
+    }
+
+    /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return Task
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

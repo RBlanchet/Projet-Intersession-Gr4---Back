@@ -23,7 +23,7 @@ class User extends BaseUser implements JsonSerializable
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedBy="admin")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
      */
     private $projects;
 
@@ -97,12 +97,19 @@ class User extends BaseUser implements JsonSerializable
             'user' . $this->id => array(
                 'id'        => $this->id,
                 'username'  => $this->username,
+                'mail'      => $this->email,
             )
         );
     }
 
     public function getRelations() {
-        return array();
+        return array(
+            'projects'      => $this->getProjects(),
+            'tasks'         => $this->getTasks(),
+            'projectRoles'  => $this->getProtectedRoles(),
+            'jobs'          => $this->getJobs(),
+            'meetings'      => $this->getMeetings()
+        );
     }
 
     /**

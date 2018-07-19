@@ -30,7 +30,8 @@ class Project
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="projects")
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $admin;
 
@@ -89,12 +90,48 @@ class Project
      */
     private $sprints;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="projects")
+     * @ORM\JoinTable(name="users_projects")
+     */
+    private $users;
+
+
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->sprints = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
+    public function jsonSerialize()
+    {
+        return array(
+            'project' . $this->id => array(
+                'id'            => $this->id,
+                'admin'         => $this->admin,
+                'name'          => $this->name,
+                'cost'          => $this->cost,
+                'description'   => $this->description,
+                'hourPool'      => $this->hourPool,
+                'hourSpend'     => $this->hourSpend,
+                'price'         => $this->price,
+                'dateStart'     => $this->dateStart,
+                'dateEnd'       => $this->dateEnd,
+                'isActive'      => $this->active,
+            )
+        );
     }
 
+    public function getRelations()
+    {
+        return array(
+            'sprints'      => $this->getSprints(),
+            'tasks'         => $this->getTasks(),
+            'meetings'      => $this->getMeetings(),
+            'users'         => $this->getUsers(),
+        );
+    }
     public function getTasks(): Collection
     {
         return $this->tasks;
@@ -103,6 +140,10 @@ class Project
     public function getSprints(): Collection
     {
         return $this->sprints;
+    }
+    public function getUsers(): Collection
+    {
+        return $this->users;
     }
 
     /**
@@ -453,5 +494,31 @@ class Project
     public function removeSprint(\AppBundle\Entity\Sprint $sprint)
     {
         return $this->sprints->removeElement($sprint);
+    }
+
+    /**
+     * Add user.
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Project
+     */
+    public function addUser(\AppBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user.
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeUser(\AppBundle\Entity\User $user)
+    {
+        return $this->users->removeElement($user);
     }
 }

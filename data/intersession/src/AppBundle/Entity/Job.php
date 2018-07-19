@@ -33,12 +33,6 @@ class Job
     private $createdAt;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $createdBy;
-
-
-    /**
      * Get id.
      *
      * @return int
@@ -96,27 +90,4 @@ class Job
         return $this->createdAt;
     }
 
-    /**
-     * Set createdBy.
-     *
-     * @param int $createdBy
-     *
-     * @return Job
-     */
-    public function setCreatedBy($createdBy)
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    /**
-     * Get createdBy.
-     *
-     * @return int
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
 }

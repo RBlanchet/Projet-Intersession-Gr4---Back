@@ -22,13 +22,7 @@ class Role {
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="protectedRoles")
-    */
-
-    private $users;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project")
      */
     private $project;
 
@@ -42,10 +36,34 @@ class Role {
      */
     private $job;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="protectedRoles")
+     */
+
+    private $users;
+
+
     public function __construct() {
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
+    public function jsonSerialize()
+    {
+        return array(
+            'project' . $this->id => array(
+                'id'            => $this->id,
+                'job'           => $this->job,
+                'project'       => $this->project,
+                'cost'          => $this->cost,
+            )
+        );
     }
 
+    public function getRelations()
+    {
+        return array(
+            'users'         => $this->getUsers(),
+        );
+    }
     /**
      * Get id.
      *

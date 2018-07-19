@@ -70,7 +70,26 @@ class Sprint
     {
         return $this->tasks;
     }
+    public function jsonSerialize()
+    {
+        return array(
+            'sprint' . $this->id => array(
+                'id'            => $this->id,
+                'project'       => $this->project,
+                'name'          => $this->name,
+                'dateStart'     => $this->dateStart,
+                'dateEnd'       => $this->dateEnd,
+                'isActive'      => $this->active,
+            )
+        );
+    }
 
+    public function getRelations()
+    {
+        return array(
+            'tasks'         => $this->getTasks(),
+        );
+    }
 
     /**
      * Get id.
@@ -224,30 +243,6 @@ class Sprint
     public function getActive()
     {
         return $this->active;
-    }
-
-    /**
-     * Set admin.
-     *
-     * @param \AppBundle\Entity\Project|null $admin
-     *
-     * @return Sprint
-     */
-    public function setAdmin(\AppBundle\Entity\Project $admin = null)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin.
-     *
-     * @return \AppBundle\Entity\Project|null
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
     }
 
     /**
