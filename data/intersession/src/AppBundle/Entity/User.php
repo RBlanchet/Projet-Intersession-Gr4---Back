@@ -34,13 +34,13 @@ class User extends BaseUser implements JsonSerializable
     private $tasks;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role", inversedBy="users")
+     *  @ORM\OneToMany(targetEntity="AppBundle\Entity\Role", mappedBy="user")
      */
 
     private $protectedRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Job")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
      * @ORM\JoinTable(name="users_jobs",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="id")}
@@ -241,5 +241,19 @@ class User extends BaseUser implements JsonSerializable
     public function removeMeeting(\AppBundle\Entity\Meeting $meeting)
     {
         return $this->meetings->removeElement($meeting);
+    }
+
+    /**
+     * Set jobs.
+     *
+     * @param \AppBundle\Entity\Job|null $jobs
+     *
+     * @return User
+     */
+    public function setJobs(\AppBundle\Entity\Job $jobs = null)
+    {
+        $this->jobs = $jobs;
+
+        return $this;
     }
 }

@@ -37,14 +37,13 @@ class Role {
     private $job;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="protectedRoles")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="protectedRoles")
      */
-
-    private $users;
+    private $user;
 
 
     public function __construct() {
-        $this->users = new ArrayCollection();
+
     }
     public function jsonSerialize()
     {
@@ -54,6 +53,7 @@ class Role {
                 'job'           => $this->job,
                 'project'       => $this->project,
                 'cost'          => $this->cost,
+                'user'          => $this->user,
             )
         );
     }
@@ -61,7 +61,7 @@ class Role {
     public function getRelations()
     {
         return array(
-            'users'         => $this->getUsers(),
+
         );
     }
     /**
@@ -180,5 +180,29 @@ class Role {
     public function getJob()
     {
         return $this->job;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param \AppBundle\Entity\User|null $user
+     *
+     * @return Role
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \AppBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
