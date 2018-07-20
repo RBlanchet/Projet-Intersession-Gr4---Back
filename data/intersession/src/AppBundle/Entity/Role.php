@@ -5,14 +5,16 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use JsonSerializable;
 
 
 /**
  * Class Job
  * @ORM\Entity
  * @ORM\Table(name="roles")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RoleRepository")
  */
-class Role {
+class Role  implements JsonSerializable {
 
     /**
      * @ORM\Id

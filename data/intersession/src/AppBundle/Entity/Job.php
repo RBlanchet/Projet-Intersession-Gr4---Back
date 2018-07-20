@@ -6,6 +6,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 
 /**
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="jobs")
  */
 
-class Job
+class Job implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -31,6 +32,27 @@ class Job
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="protectedRoles")
+     */
+    private $user;
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
 
     /**
      * Get id.
@@ -88,6 +110,20 @@ class Job
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    public function jsonSerialize()
+    {
+        return array(
+            'job' . $this->id => array(
+                'id'        => $this->getId(),
+                'name'      => $this->getName(),
+            )
+        );
+    }
+
+    public function getRelations() {
+        return array();
     }
 
 }

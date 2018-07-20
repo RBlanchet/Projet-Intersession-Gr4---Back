@@ -5,13 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="projects")
  */
 
-class Project
+class Project implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -120,8 +121,8 @@ class Project
                 'hourPool'      => $this->hourPool,
                 'hourSpend'     => $this->hourSpend,
                 'price'         => $this->price,
-                'dateStart'     => $this->dateStart,
-                'dateEnd'       => $this->dateEnd,
+                //'dateStart'     => $this->dateStart,
+                //'dateEnd'       => $this->dateEnd,
                 'isActive'      => $this->active,
             )
         );

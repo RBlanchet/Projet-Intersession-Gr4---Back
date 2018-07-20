@@ -36,10 +36,8 @@ class AuthController extends BaseController
     {
         $user = $this->getUser();
         if ($user) {
-            $jsonNormalize = $this->JSONHelper->normalizeJSON(array(
-                'users' => $user
-            ));
-            return new Response(json_encode($jsonNormalize), 200);
+            $jsonNormalize = $this->JSONHelper->normalizeJSON($user);
+            return new Response($jsonNormalize, 200);
         } else {
             return new Response(null, 404);
         }
