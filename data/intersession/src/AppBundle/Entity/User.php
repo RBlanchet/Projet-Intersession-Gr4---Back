@@ -105,11 +105,11 @@ class User extends BaseUser implements JsonSerializable
 
     public function getRelations() {
         return array(
-            'projects'      => $this->getProjects(),
-            'tasks'         => $this->getTasks(),
-            'protectedRoles'  => $this->getProtectedRoles(),
-            'jobs'          => $this->getJobs(),
-            'meetings'      => $this->getMeetings()
+            'projects'          => $this->getProjects(),
+            'tasks'             => $this->getTasks(),
+            'protectedRoles'    => $this->getProtectedRoles(),
+            'jobs'              => $this->getJobs(),
+            'meetings'          => $this->getMeetings()
         );
     }
 

@@ -1,5 +1,11 @@
 app:
-    resource: '@AppBundle/Controller/'
+    resource: '@AppBundle/Controller/DefaultController.php'
     type: annotation
+tasks:
+    type:   rest
+    resource: AppBundle\Controller\TaskController
+tasks_status:
+    type: rest
+    resource: AppBundle\Controller\TaskStatusController
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"

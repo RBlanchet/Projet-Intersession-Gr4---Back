@@ -1,0 +1,5 @@
+# app/config/serialization.yml
+AppBundle\Entity\Task:
+    attributes:
+        id:
+            groups:['','']

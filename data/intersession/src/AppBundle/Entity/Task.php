@@ -25,12 +25,12 @@ class Task {
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private $cost;
 
@@ -45,7 +45,7 @@ class Task {
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TaskStatus", mappedBy="task")
      */
     private $status;
 
@@ -60,7 +60,7 @@ class Task {
     private $createdBy;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private $timeSpend;
 
@@ -76,23 +76,27 @@ class Task {
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sprint", inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=true)
+     *
      */
     private $sprint;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="tasks")
-     * @ORM\JoinTable(name="users_tasks")
+     * @ORM\JoinTable(name="users_tasks", joinColumns={
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)})
      */
     private $users;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Task", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
      */
     private $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="parent")
+     * @ORM\JoinColumn(name="child_id", referencedColumnName="id", nullable=true)
      */
     private $children;
 
@@ -107,18 +111,18 @@ class Task {
     {
         return array(
             'project' . $this->id => array(
-                'id'            => $this->id,
-                'project'       => $this->project,
-                'name'          => $this->name,
-                'cost'          => $this->cost,
-                'sprint'        => $this->sprint,
-                'description'   => $this->description,
-                'timeSpend'     => $this->timeSpend,
-                'dateStart'     => $this->dateStart,
-                'dateEnd'       => $this->dateEnd,
-                'isActive'      => $this->active,
-                'status'        => $this->status,
-                'parent'        => $this->parent,
+                'id'            => $this->getId(),
+                'project'       => $this->getProject(),
+                'name'          => $this->getName(),
+                'cost'          => $this->getCost(),
+                'sprint'        => $this->getSprint(),
+                'description'   => $this->getDescription(),
+                'timeSpend'     => $this->getTimeSpend(),
+                'dateStart'     => $this->getDateStart(),
+                'dateEnd'       => $this->getDateEnd(),
+                'isActive'      => $this->getActive(),
+                'status'        => $this->getStatus(),
+                'parent'        => $this->getParent(),
             )
         );
     }
@@ -146,12 +150,6 @@ class Task {
         $this->users[] = $user;
     }
 
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
@@ -505,5 +503,19 @@ class Task {
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set users
+     *
+     * @param string $users
+     *
+     * @return Task
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
+
+        return $this;
     }
 }
