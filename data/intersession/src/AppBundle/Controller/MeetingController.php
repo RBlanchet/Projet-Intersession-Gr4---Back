@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 23/07/2018
- * Time: 14:47
- */
+
 
 namespace AppBundle\Controller;
 
@@ -72,7 +67,7 @@ class MeetingController extends BaseController
             return $meeting;
         } else {
             return $this->meetingNotFound();
-        }
+      }
     }
 
     /**
@@ -93,12 +88,14 @@ class MeetingController extends BaseController
     public function updateMeetingAction(Request $request)
     {
         return $this->updateMeeting($request, true);
+
     }
 
     /**
      * @Rest\View(serializerGroups={"meeting"})
      * @Rest\Patch("/meetings/{id}")
      */
+
     public function patchMeetingAction(Request $request)
     {
         return $this->updateMeeting($request, true);
@@ -178,5 +175,4 @@ class MeetingController extends BaseController
             return $this->meetingNotFound();
         }
     }
-
 }

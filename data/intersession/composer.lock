@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< Updated upstream
     "content-hash": "07236b536953dbc4511c74f58e9a02b4",
+=======
+    "content-hash": "8a03d5e65767a5200ed19010e31c073b",
+>>>>>>> Stashed changes
     "packages": [
         {
             "name": "composer/ca-bundle",

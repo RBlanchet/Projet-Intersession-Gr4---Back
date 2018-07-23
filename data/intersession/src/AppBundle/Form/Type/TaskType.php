@@ -22,7 +22,7 @@ class TaskType extends AbstractType
         $builder->add('dateEnd');
         $builder->add('project');
         $builder->add('users', CollectionType::class,[
-            'entry_type'        => TaskStatusType::class,
+            'entry_type'        => UserType::class,
             'allow_add'         => true,
             'error_bubbling'    =>false,
             ]);

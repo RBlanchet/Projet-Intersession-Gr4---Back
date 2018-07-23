@@ -1,16 +1,18 @@
+# app/config/serialization.yml
 AppBundle\Entity\User:
     attributes:
-        #id:
-        #    groups: ['user', 'auth-token']
+        id:
+            groups: ['user', 'auth-token', 'job']
+
         firstname:
-            groups: ['user', 'auth-token']
+            groups: ['user', 'auth-token', 'job']
         lastname:
-            groups: ['user', 'auth-token']
+            groups: ['user', 'auth-token', 'job']
         email:
-            groups: ['user', 'auth-token']
+            groups: ['user', 'auth-token', 'job']
         roles:
             groups: ['user', 'auth-token']
-        job:
+        jobs:
             groups: ['user', 'auth-token']
 
 AppBundle\Entity\AuthToken:
@@ -24,6 +26,7 @@ AppBundle\Entity\AuthToken:
         user:
             groups: ['auth-token']
 
+
 AppBundle\Entity\Meeting:
     attributes:
         #id:
@@ -36,3 +39,50 @@ AppBundle\Entity\Meeting:
             groups: ['meeting']
         description:
             groups: ['meeting']
+
+
+AppBundle\Entity\Task:
+    attributes:
+        id:
+            groups: ['task','user', 'children']
+        name:
+            groups: ['task','user','children']
+        description:
+            groups: ['task','user','children']
+        status:
+            groups: ['task','user','children']
+        project:
+            groups: ['task','user','children']
+        dateStart:
+            groups: ['task','user','children']
+        dateEnd:
+            groups: ['task','user','children']
+        createdAt:
+            groups: ['task','user','children']
+        createdBy:
+            groups: ['task','user','children']
+        active:
+            groups: ['task','user','children']
+        parent:
+            groups: ['task']
+        users:
+            groups: ['user']
+        children:
+            groups: ['children']
+
+AppBundle\Entity\TaskStatus:
+    attributes:
+        id:
+            groups: ['task']
+        title:
+            groups: ['task']
+
+AppBundle\Entity\Job:
+    attributes:
+        id:
+            groups: ['user','job']
+        name:
+            groups: ['user','job']
+        user:
+            groups: ['job']
+

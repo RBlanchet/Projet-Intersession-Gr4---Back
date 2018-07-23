@@ -12,7 +12,7 @@ use AppBundle\Entity\TaskStatus;
 
 class TaskStatusController extends Controller {
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"task"})
      * @Rest\Get("/tasks/{id}/status")
      */
     public function getTaskStatusAction(Request $request){
@@ -27,7 +27,7 @@ class TaskStatusController extends Controller {
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     * @Rest\View(serializerGroups={"task"}, statusCode=Response::HTTP_CREATED)
      * @Rest\Post("/tasks/{id}/status")
      */
     public function postTaskStatusAction(Request $request){

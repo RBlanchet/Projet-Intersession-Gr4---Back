@@ -109,34 +109,7 @@ class Project implements JsonSerializable
         $this->users = new ArrayCollection();
         $this->meetings = new ArrayCollection();
     }
-    public function jsonSerialize()
-    {
-        return array(
-            'project' . $this->id => array(
-                'id'            => $this->id,
-                'admin'         => $this->admin,
-                'name'          => $this->name,
-                'cost'          => $this->cost,
-                'description'   => $this->description,
-                'hourPool'      => $this->hourPool,
-                'hourSpend'     => $this->hourSpend,
-                'price'         => $this->price,
-                //'dateStart'     => $this->dateStart,
-                //'dateEnd'       => $this->dateEnd,
-                'isActive'      => $this->active,
-            )
-        );
-    }
 
-    public function getRelations()
-    {
-        return array(
-            'sprints'      => $this->getSprints(),
-            'tasks'         => $this->getTasks(),
-            'meetings'      => $this->getMeetings(),
-            'users'         => $this->getUsers(),
-        );
-    }
     public function getTasks(): Collection
     {
         return $this->tasks;

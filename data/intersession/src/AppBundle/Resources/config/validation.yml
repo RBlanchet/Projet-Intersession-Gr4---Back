@@ -1,3 +1,4 @@
+# app/config/validation.yml
 AppBundle\Entity\User:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
@@ -26,3 +27,48 @@ AppBundle\Entity\Credentials:
         password:
             - NotBlank: ~
             - Type: string
+AppBundle\Entity\Task:
+    constraints:
+      # - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+    properties:
+        name:
+            - NotBlank: ~
+            - Type: string
+        dateStart:
+            - NotBlank: ~
+            - Date: ~
+        dateEnd:
+            - NotBlank: ~
+            - Date: ~
+        cost:
+            - Type: int
+            - GreaterThanOrEqual:
+                value: 0
+        sprint:
+            - Type: int
+        description:
+            - Type: string
+        time_spend:
+            - Type: int
+            - GreaterThanOrEqual:
+                value: 0
+        parent:
+            - Type: int
+        project:
+            - NotBlank: ~
+            - Type: int
+        users:
+            - Valid: ~
+            - AppBundle\Form\Validator\Constraint\PriceTypeUnique: ~
+AppBundle\Entity\TaskStatus:
+    properties:
+        title:
+            - NotNull: ~
+            - Choice:
+                choices: [to_do, in_progress, finished, validated]
+AppBundle\Entity\Job:
+    properties:
+        name:
+            - NotNull: ~
+            - Choice:
+                choices: ['Chef de projet', 'Lead Developpeur', 'Développeur Back', 'Developpeur Front', 'Intégrateur', 'Prestataire', 'Client']

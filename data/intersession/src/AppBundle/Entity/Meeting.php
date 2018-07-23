@@ -56,6 +56,11 @@ class Meeting
     private $dateEnd;
 
     /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $cost;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -69,6 +74,13 @@ class Meeting
      * @ORM\Column(type="boolean")
      */
     private $active;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sprint")
+     * @ORM\JoinColumn(nullable=true)
+     *
+     */
+    private $sprint;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project", inversedBy="meetings")
@@ -85,30 +97,7 @@ class Meeting
     {
         $this->users = new ArrayCollection();
     }
-    public function jsonSerialize()
-    {
-        return array(
-            'project' . $this->id => array(
-                'id'            => $this->id,
-                'organiser'     => $this->organiser,
-                'name'          => $this->name,
-                'project'       => $this->project,
-                'location'      => $this->location,
-                'description'   => $this->description,
-                'timeSpend'     => $this->timeSpend,
-                'dateStart'     => $this->dateStart,
-                'dateEnd'       => $this->dateEnd,
-                'isActive'      => $this->active,
-            )
-        );
-    }
 
-    public function getRelations()
-    {
-        return array(
-            'users'         => $this->getUsers(),
-        );
-    }
     public function getUsers()
     {
         return $this->users;
@@ -412,5 +401,53 @@ class Meeting
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set cost
+     *
+     * @param float $cost
+     *
+     * @return Meeting
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return float
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set sprint
+     *
+     * @param \AppBundle\Entity\Sprint $sprint
+     *
+     * @return Meeting
+     */
+    public function setSprint(\AppBundle\Entity\Sprint $sprint = null)
+    {
+        $this->sprint = $sprint;
+
+        return $this;
+    }
+
+    /**
+     * Get sprint
+     *
+     * @return \AppBundle\Entity\Sprint
+     */
+    public function getSprint()
+    {
+        return $this->sprint;
     }
 }

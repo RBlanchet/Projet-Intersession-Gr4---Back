@@ -33,6 +33,7 @@ class User implements UserInterface
         $this->tasks = new ArrayCollection();
         $this->protectedRoles = new ArrayCollection();
         $this->meetings = new ArrayCollection();
+        $this->jobs = new ArrayCollection();
     }
 
     /**
@@ -71,7 +72,9 @@ class User implements UserInterface
 
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Task", mappedBy="users")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Task", inversedBy="users")
+     * @ORM\JoinTable(name="users_tasks", joinColumns={
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)})
      */
     private $tasks;
 
@@ -82,20 +85,15 @@ class User implements UserInterface
     private $protectedRoles;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job", inversedBy="users")
-     */
-    private $jobs;
-
-    /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="users")
      */
     private $meetings;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Job", mappedBy="user")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $job;
+    private $jobs;
 
     /**
      * @return mixed
@@ -121,12 +119,17 @@ class User implements UserInterface
         return $this->firstname;
     }
 
+
     /**
      * @param $firstname
      */
     public function setFirstname($firstname)
     {
         $this->firstname = $firstname;
+    }
+    public function getJob()
+    {
+        return $this->job;
     }
 
     /**
@@ -394,22 +397,4 @@ class User implements UserInterface
     {
         $this->plainPassword = $plainPassword;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getJob()
-    {
-        return $this->job;
-    }
-
-    /**
-     * @param mixed $job
-     */
-    public function setJob($job)
-    {
-        $this->job = $job;
-    }
-
-
 }

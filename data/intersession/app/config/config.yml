@@ -79,6 +79,8 @@ fos_user:
         address: "admin@intersession.com"
         sender_name: "Projet Intersession Gr4"
 fos_rest:
+    serializer:
+        serialize_null: true
     routing_loader:
         include_format: false
     view:

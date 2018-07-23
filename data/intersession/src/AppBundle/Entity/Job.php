@@ -6,15 +6,14 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
-
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="jobs")
+ * @ORM\Table(name="jobs",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="jobs_name_user_unique", columns={"name", "user_id"})})
  */
 
-class Job implements JsonSerializable
+class Job
 {
     /**
      * @ORM\Id
@@ -28,12 +27,19 @@ class Job implements JsonSerializable
      */
     private $name;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="jobs")
+     */
+    private $user;
+    
     /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
+
      * Get id.
      *
      * @return int
@@ -91,18 +97,27 @@ class Job implements JsonSerializable
         return $this->createdAt;
     }
 
-    public function jsonSerialize()
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Job
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
     {
-        return array(
-            'job' . $this->id => array(
-                'id'        => $this->getId(),
-                'name'      => $this->getName(),
-            )
-        );
+        $this->user = $user;
+
+        return $this;
     }
 
-    public function getRelations() {
-        return array();
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
-
 }

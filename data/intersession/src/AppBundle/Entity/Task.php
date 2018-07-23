@@ -82,9 +82,10 @@ class Task {
     private $sprint;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="tasks")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="tasks")
      * @ORM\JoinTable(name="users_tasks", joinColumns={
      * @ORM\JoinColumn(referencedColumnName="id", nullable=true)})
+     * @var User[]
      */
     private $users;
 

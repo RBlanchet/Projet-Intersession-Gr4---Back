@@ -3,14 +3,18 @@
  * Created by PhpStorm.
  * User: admin
  * Date: 23/07/2018
+<<<<<<< HEAD
  * Time: 14:49
+=======
+ * Time: 15:14
+>>>>>>> Job
  */
 
 namespace AppBundle\Form\Type;
 
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -39,5 +43,4 @@ class MeetingType extends AbstractType
             'csrf_protection' => false
         ]);
     }
-
 }
