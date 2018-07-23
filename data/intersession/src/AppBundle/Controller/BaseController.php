@@ -44,4 +44,14 @@ abstract class BaseController extends Controller
         return $this->authorizationHelper->getCurrentUser();
     }
 
+    /**
+     * Return true if user is Admin
+     *
+     * @return mixed|null
+     */
+    public function isAdmin()
+    {
+        return $this->authorizationHelper->isAdmin();
+    }
+
 }

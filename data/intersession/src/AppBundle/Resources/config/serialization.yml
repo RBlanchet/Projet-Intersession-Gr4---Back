@@ -10,7 +10,7 @@ AppBundle\Entity\User:
             groups: ['user', 'auth-token']
         roles:
             groups: ['user', 'auth-token']
-        jobs:
+        job:
             groups: ['user', 'auth-token']
 
 AppBundle\Entity\AuthToken:
