@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -53,9 +54,25 @@ class UserController extends BaseController
 
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
+     * @Rest\Get("/users/{id}")
+     */
+    public function getUsersAction(Request $request, $id)
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        if ($user) {
+            return $user;
+        } else {
+            return $this->userNotFound();
+        }
+
+    }
+
+    /**
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
      * @Rest\Get("/users")
      */
-    public function getUsersAction(Request $request)
+    public function getAllUsersAction(Request $request)
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
@@ -138,5 +155,26 @@ class UserController extends BaseController
     private function userNotFound()
     {
         return \FOS\RestBundle\View\View::create(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\Delete("/users/{id}")
+     */
+    public function removeUserAction(Request $request)
+    {
+        $em = $this->get('doctrine.orm.entity_manager');
+        $user = $em->getRepository('AppBundle:User')
+            ->find($request->get('id'));
+        /* @var $user User */
+
+        if ($user) {
+            $em->remove($user);
+            $em->flush();
+
+            return View::create(["message" => "L'utilisateur à bien été supprimé."]);
+        } else {
+            return $this->userNotFound();
+        }
     }
 }

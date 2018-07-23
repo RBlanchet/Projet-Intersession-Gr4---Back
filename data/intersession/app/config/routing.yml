@@ -12,6 +12,9 @@ fos_user:
 users:
     type:     rest
     resource: AppBundle\Controller\UserController
+meetings:
+    type:     rest
+    resource: AppBundle\Controller\MeetingController
 auth-tokens:
     type:     rest
     resource: AppBundle\Controller\AuthTokenController

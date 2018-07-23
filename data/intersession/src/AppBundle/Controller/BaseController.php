@@ -54,4 +54,21 @@ abstract class BaseController extends Controller
         return $this->authorizationHelper->isAdmin();
     }
 
+    /**
+     * Convert string 'YYYY-MM-DD hh:mm:ss' to object Datetime
+     *
+     * @param $dateString
+     * @return bool
+     */
+    public function stringToDatetime($dateString)
+    {
+        $datetime = new \DateTime($dateString);
+
+        if ($datetime) {
+            return $datetime;
+        } else {
+            return false;
+        }
+    }
+
 }

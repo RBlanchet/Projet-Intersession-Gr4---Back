@@ -1,7 +1,7 @@
 AppBundle\Entity\User:
     attributes:
-        id:
-            groups: ['user', 'auth-token']
+        #id:
+        #    groups: ['user', 'auth-token']
         firstname:
             groups: ['user', 'auth-token']
         lastname:
@@ -15,11 +15,24 @@ AppBundle\Entity\User:
 
 AppBundle\Entity\AuthToken:
     attributes:
-        id:
-            groups: ['auth-token']
+        #id:
+        #   groups: ['auth-token']
         value:
             groups: ['auth-token']
         createdAt:
             groups: ['auth-token']
         user:
             groups: ['auth-token']
+
+AppBundle\Entity\Meeting:
+    attributes:
+        #id:
+        #   groups: ['meeting']
+        name:
+            groups: ['meeting']
+        dateStart:
+            groups: ['meeting']
+        dateEnd:
+            groups: ['meeting']
+        description:
+            groups: ['meeting']
