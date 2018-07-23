@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TaskController extends BaseController {
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED)
+     * @Rest\View(serializerGroups={"task"}, statusCode=Response::HTTP_CREATED)
      * @Rest\Post("/", name="task_creation")
      */
     public function postTasksAction(Request $request)
@@ -41,7 +41,7 @@ class TaskController extends BaseController {
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"task"} )
      * @Rest\Get("/tasks", name="task_get_all")
      */
     public function getTasksAction()
@@ -54,7 +54,7 @@ class TaskController extends BaseController {
 
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"task"})
      * @Rest\Get("/tasks/{id}", name="task_get_one")
      */
     public function getTaskAction(Request $request)
@@ -72,7 +72,7 @@ class TaskController extends BaseController {
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"task"})
      * @Rest\Patch("/tasks/{id}")
      */
     public function patchTaskAction(Request $request){
@@ -101,7 +101,7 @@ class TaskController extends BaseController {
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\View(serializerGroups={"task"}, statusCode=Response::HTTP_NO_CONTENT)
      * @REST\Delete("/tasks/{id}")
      */
     public function removeTaskAction(Request $request){
@@ -113,6 +113,4 @@ class TaskController extends BaseController {
             $em->flush();
         }
     }
-
-
 }
