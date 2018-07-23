@@ -1,0 +1,25 @@
+AppBundle\Entity\User:
+    attributes:
+        id:
+            groups: ['user', 'auth-token']
+        firstname:
+            groups: ['user', 'auth-token']
+        lastname:
+            groups: ['user', 'auth-token']
+        email:
+            groups: ['user', 'auth-token']
+        roles:
+            groups: ['user', 'auth-token']
+        jobs:
+            groups: ['user', 'auth-token']
+
+AppBundle\Entity\AuthToken:
+    attributes:
+        id:
+            groups: ['auth-token']
+        value:
+            groups: ['auth-token']
+        createdAt:
+            groups: ['auth-token']
+        user:
+            groups: ['auth-token']

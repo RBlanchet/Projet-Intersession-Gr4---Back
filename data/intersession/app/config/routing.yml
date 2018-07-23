@@ -9,3 +9,9 @@ tasks_status:
     resource: AppBundle\Controller\TaskStatusController
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+users:
+    type:     rest
+    resource: AppBundle\Controller\UserController
+auth-tokens:
+    type:     rest
+    resource: AppBundle\Controller\AuthTokenController

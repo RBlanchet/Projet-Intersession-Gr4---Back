@@ -8,68 +8,135 @@
 
 namespace AppBundle\Controller;
 
-// Base Controller
-use AppBundle\Controller\BaseController;
-
-// Routing
-use AppBundle\Entity\Project;
-use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
-// Request and Response
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
+use AppBundle\Form\Type\UserType;
+use AppBundle\Entity\User;
+use AppBundle\Controller\BaseController;
 
 /**
- * @Route("/user", name="user")
+ * Class UserController
+ * @package AppBundle\Controller
  */
 class UserController extends BaseController
 {
     /**
-     * @Route("/", name="_index")
-     * @Method({"POST"})
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
+     * @Rest\Post("/users")
      */
-    public function userFormCreateAction()
+    public function postUsersAction(Request $request)
     {
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user, ['validation_groups'=>['Default', 'New']]);
+
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
+            $encoder = $this->get('security.password_encoder');
+            // le mot de passe en claire est encodé avant la sauvegarde
+            $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($encoded);
+
+            $em = $this->get('doctrine.orm.entity_manager');
+            $em->persist($user);
+            $em->flush();
+            return $user;
+        } else {
+            return $form;
+        }
     }
 
     /**
-     * @Route("/", name="_getAllUser")
-     * @Method({"GET"})
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
+     * @Rest\Get("/users")
      */
-    public function userGetAllAction()
+    public function getUsersAction(Request $request)
     {
-        $users = $this->getDoctrine()->getManager()->getRepository(User::class)->findAll();
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
-        return new Response($this->JSONHelper->normalizeJSON($users), 200);
+        return $users;
     }
 
     /**
-     * @Route("/create", name="_create")
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
+     * @Rest\Get("/me")
      */
-    public function userCreateAction()
+    public function getCurrentUserAction(Request $request)
     {
-        dump($this->getUser()->getJobs()); die;
-        $roles = $this->authorizationHelper->getRolesCreateUser($this->getUser()->getJobs()); die;
-
+        return $this->getUser();
     }
 
     /**
-     * @Route("/{id}", name="_get")
-     * @Method({"GET"})
+     * @Rest\View(serializerGroups={"user"})
+     * @Rest\Put("/users/{id}")
      */
-    public function userGetAction(User $user)
+    public function updateUserAction(Request $request)
     {
-        return new Response(json_encode($this->JSONHelper->normalizeJSON($user)));
+        return $this->updateUser($request, true);
+    }
+
+    /**
+     * @Rest\View(serializerGroups={"user"})
+     * @Rest\Patch("/users/{id}")
+     */
+    public function patchUserAction(Request $request)
+    {
+        return $this->updateUser($request, false);
     }
 
 
+    /**
+     * @param Request $request
+     * @param $clearMissing
+     * @return User|\FOS\RestBundle\View\View|\Symfony\Component\Form\FormInterface
+     */
+    private function updateUser(Request $request, $clearMissing)
+    {
+        $user = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:User')
+            ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+        /* @var $user User */
 
+        if (empty($user)) {
+            return $this->userNotFound();
+        }
 
+        if ($clearMissing) { // Si une mise à jour complète, le mot de passe doit être validé
+            $options = ['validation_groups'=>['Default', 'FullUpdate']];
+        } else {
+            $options = []; // Le groupe de validation par défaut de Symfony est Default
+        }
 
+        $form = $this->createForm(UserType::class, $user, $options);
+
+        $form->submit($request->request->all(), $clearMissing);
+
+        if ($form->isValid()) {
+            // Si l'utilisateur veut changer son mot de passe
+            if (!empty($user->getPlainPassword())) {
+                $encoder = $this->get('security.password_encoder');
+                $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($encoded);
+            }
+            $em = $this->get('doctrine.orm.entity_manager');
+            $em->merge($user);
+            $em->flush();
+            return $user;
+        } else {
+            return $form;
+        }
+    }
+
+    /**
+     * @return \FOS\RestBundle\View\View
+     */
+    private function userNotFound()
+    {
+        return \FOS\RestBundle\View\View::create(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+    }
 }

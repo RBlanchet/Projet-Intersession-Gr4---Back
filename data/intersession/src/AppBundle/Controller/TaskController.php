@@ -49,7 +49,7 @@ class TaskController extends BaseController {
         $tasks = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Task')
             ->findAll();
-        return new JsonResponse($tasks);
+        return $tasks;
     }
 
 

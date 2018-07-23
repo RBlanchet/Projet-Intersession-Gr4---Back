@@ -1,26 +1,68 @@
 <?php
-// src/AppBundle/Entity/User.php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 23/07/2018
+ * Time: 09:21
+ */
 
 namespace AppBundle\Entity;
 
-use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use JsonSerializable;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Entity()
+ * @ORM\Table(name="users",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="users_email_unique",columns={"email"})}
+ * )
  */
-class User extends BaseUser implements JsonSerializable
+class User implements UserInterface
 {
+
+    const MATCH_VALUE_THRESHOLD = 25;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->projects = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+        $this->protectedRoles = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue
      */
     protected $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $password;
+
+    protected $plainPassword;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $firstname;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $lastname;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $email;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
@@ -49,63 +91,74 @@ class User extends BaseUser implements JsonSerializable
      */
     private $meetings;
 
-    public function __construct()
-    {
-        parent::__construct();
-        // Logic to call entity
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $job;
 
-        $this->projects = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
-        $this->protectedRoles = new ArrayCollection();
-        $this->meetings = new ArrayCollection();
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
-    public function getProjects(): Collection
+    /**
+     * @param $id
+     */
+    public function setId($id)
     {
-        return $this->projects;
+        $this->id = $id;
     }
 
-    public function getTasks(): Collection
+    /**
+     * @return mixed
+     */
+    public function getFirstname()
     {
-        return $this->tasks;
+        return $this->firstname;
     }
 
-    public function getJobs()
+    /**
+     * @param $firstname
+     */
+    public function setFirstname($firstname)
     {
-        return $this->jobs;
+        $this->firstname = $firstname;
     }
 
-    public function getProtectedRoles(): Collection
+    /**
+     * @return mixed
+     */
+    public function getLastname()
     {
-
-        return $this->protectedRoles;
-
-    }
-    public function getMeetings(): Collection
-    {
-        return $this->meetings;
+        return $this->lastname;
     }
 
-    public function jsonSerialize()
+    /**
+     * @param $lastname
+     */
+    public function setLastname($lastname)
     {
-        return array(
-            'user' . $this->id => array(
-            'id'                => $this->getId(),
-            'username'          => $this->getUsername(),
-            'protectedRoles'    => $this->getProtectedRoles(),
-            'email'             => $this->getEmail(),
-            )
-        );
+        $this->lastname = $lastname;
     }
 
-    public function getRelations() {
-        return array(
-            'projects'          => $this->getProjects(),
-            'tasks'             => $this->getTasks(),
-            'protectedRoles'    => $this->getProtectedRoles(),
-            'jobs'              => $this->getJobs(),
-            'meetings'          => $this->getMeetings()
-        );
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 
     /**
@@ -251,4 +304,112 @@ class User extends BaseUser implements JsonSerializable
 
         return $this;
     }
+
+    /**
+     * @return Collection
+     */
+    public function getProjects(): Collection
+    {
+        return $this->projects;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProtectedRoles(): Collection
+    {
+
+        return $this->protectedRoles;
+
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+
+    public function getRoles()
+    {
+        return [];
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+        // Suppression des données sensibles
+        $this->plainPassword = null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJob()
+    {
+        return $this->job;
+    }
+
+    /**
+     * @param mixed $job
+     */
+    public function setJob($job)
+    {
+        $this->job = $job;
+    }
+
+
 }

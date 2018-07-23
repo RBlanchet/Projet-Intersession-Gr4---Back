@@ -19,6 +19,9 @@ abstract class BaseController extends Controller
      */
     protected $JSONHelper;
 
+    /**
+     * @var AuthorizationHelper
+     */
     protected $authorizationHelper;
 
     /**
@@ -29,6 +32,16 @@ abstract class BaseController extends Controller
     {
         $this->JSONHelper           = $JSONHelper;
         $this->authorizationHelper  = $authorizationHelper;
+    }
+
+    /**
+     * Return current user
+     *
+     * @return mixed|null
+     */
+    public function getUser()
+    {
+        return $this->authorizationHelper->getCurrentUser();
     }
 
 }
