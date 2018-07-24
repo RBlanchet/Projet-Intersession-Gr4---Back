@@ -32,7 +32,7 @@ class ProjectController extends BaseController
 {
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
-     * @Rest\Post("/project")
+     * @Rest\Post("/projects")
      */
     public function postProjectAction(Request $request)
     {
@@ -53,19 +53,19 @@ class ProjectController extends BaseController
 
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
-     * @Rest\Get("/project/{id}")
+     * @Rest\Get("/projects/{id}")
      */
-    public function getProjectAction(Project $project)
+    public function getProjectAction(Request $request)
     {
         $projects = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
-            ->findById($project);
+            ->find($request->get('id'));
         return $projects;
     }
 
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
-     * @Rest\Get("/project")
+     * @Rest\Get("/projects")
      */
     public function getProjectsAction(Request $request)
     {
@@ -79,14 +79,13 @@ class ProjectController extends BaseController
 
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
-     * @Rest\Get("/project/user/{idUser}")
+     * @Rest\Get("/projects/users/{idUser}")
      */
     public function projectGetAllForUserAction($idUser)
     {
         $projects = $this->getDoctrine()
             ->getRepository(Project::class);
-        return new Response($this->JSONHelper->normalizeJSON($projects->findAllProjectByIdUser($idUser)));
+        return $projects->findAllProjectByIdUser($idUser);
 
     }
-
 }

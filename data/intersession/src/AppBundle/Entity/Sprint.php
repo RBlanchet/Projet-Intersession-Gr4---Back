@@ -70,26 +70,6 @@ class Sprint
     {
         return $this->tasks;
     }
-    public function jsonSerialize()
-    {
-        return array(
-            'sprint' . $this->id => array(
-                'id'            => $this->id,
-                'project'       => $this->project,
-                'name'          => $this->name,
-                'dateStart'     => $this->dateStart,
-                'dateEnd'       => $this->dateEnd,
-                'isActive'      => $this->active,
-            )
-        );
-    }
-
-    public function getRelations()
-    {
-        return array(
-            'tasks'         => $this->getTasks(),
-        );
-    }
 
     /**
      * Get id.

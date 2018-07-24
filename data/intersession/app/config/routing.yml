@@ -27,3 +27,9 @@ meetings:
 auth-tokens:
     type:     rest
     resource: AppBundle\Controller\AuthTokenController
+sprints:
+    type:     rest
+    resource: AppBundle\Controller\SprintController
+roles:
+    type:     rest
+    resource: AppBundle\Controller\RoleController

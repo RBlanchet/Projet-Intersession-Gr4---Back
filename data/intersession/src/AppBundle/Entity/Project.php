@@ -30,11 +30,6 @@ class Project
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     */
-    private $user_id;
-
-    /**
      * @ORM\Column(type="float")
      */
     private $price;
