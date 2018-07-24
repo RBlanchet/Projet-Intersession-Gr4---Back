@@ -5,14 +5,13 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="projects")
  */
 
-class Project implements JsonSerializable
+class Project
 {
     /**
      * @ORM\Id

@@ -108,33 +108,7 @@ class Task {
         $this->users = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
-    public function jsonSerialize()
-    {
-        return array(
-            'project' . $this->id => array(
-                'id'            => $this->getId(),
-                'project'       => $this->getProject(),
-                'name'          => $this->getName(),
-                'cost'          => $this->getCost(),
-                'sprint'        => $this->getSprint(),
-                'description'   => $this->getDescription(),
-                'timeSpend'     => $this->getTimeSpend(),
-                'dateStart'     => $this->getDateStart(),
-                'dateEnd'       => $this->getDateEnd(),
-                'isActive'      => $this->getActive(),
-                'status'        => $this->getStatus(),
-                'parent'        => $this->getParent(),
-            )
-        );
-    }
 
-    public function getRelations()
-    {
-        return array(
-            'children'      => $this->getChildren(),
-            'users'         => $this->getUsers(),
-        );
-    }
     public function getUsers(): Collection
     {
         return $this->users;

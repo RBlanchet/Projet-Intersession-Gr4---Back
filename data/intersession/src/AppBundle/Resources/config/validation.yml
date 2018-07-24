@@ -48,7 +48,7 @@ AppBundle\Entity\Task:
             - Type: int
         description:
             - Type: string
-        time_spend:
+        timeSpend:
             - Type: int
             - GreaterThanOrEqual:
                 value: 0
