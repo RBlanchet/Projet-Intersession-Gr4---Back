@@ -90,10 +90,10 @@ class User implements UserInterface
     private $meetings;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Job", mappedBy="user")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $jobs;
+    private $job;
 
     /**
      * @return mixed
@@ -126,10 +126,6 @@ class User implements UserInterface
     public function setFirstname($firstname)
     {
         $this->firstname = $firstname;
-    }
-    public function getJob()
-    {
-        return $this->job;
     }
 
     /**
@@ -295,17 +291,19 @@ class User implements UserInterface
     }
 
     /**
-     * Set jobs.
-     *
-     * @param \AppBundle\Entity\Job|null $jobs
-     *
-     * @return User
+     * @return ArrayCollection
      */
-    public function setJobs(\AppBundle\Entity\Job $jobs = null)
+    public function getJob()
     {
-        $this->jobs = $jobs;
+        return $this->job;
+    }
 
-        return $this;
+    /**
+     * @param ArrayCollection $jobs
+     */
+    public function setJob($job)
+    {
+        $this->job = $job;
     }
 
     /**
@@ -324,13 +322,6 @@ class User implements UserInterface
         return $this->tasks;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getJobs()
-    {
-        return $this->jobs;
-    }
 
     /**
      * @return Collection

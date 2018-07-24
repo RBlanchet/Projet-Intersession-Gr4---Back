@@ -9,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="jobs",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="jobs_name_user_unique", columns={"name", "user_id"})})
+ * @ORM\Table(name="jobs")
  */
 
 class Job
@@ -27,11 +26,6 @@ class Job
      */
     private $name;
 
-
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="jobs")
-     */
-    private $user;
     
     /**
      * @ORM\Column(type="datetime")
@@ -97,27 +91,4 @@ class Job
         return $this->createdAt;
     }
 
-    /**
-     * Set user
-     *
-     * @param \AppBundle\Entity\User $user
-     *
-     * @return Job
-     */
-    public function setUser(\AppBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \AppBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }
