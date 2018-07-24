@@ -13,6 +13,9 @@ jobs:
 meetings:
     type: rest
     resource: AppBundle\Controller\MeetingController
+projects:
+    type:   rest
+    resource: AppBundle\Controller\ProjectController
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 users:

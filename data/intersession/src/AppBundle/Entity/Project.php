@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectRepository")
  * @ORM\Table(name="projects")
  */
 
@@ -32,7 +32,7 @@ class Project
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
-    private $admin;
+    private $user_id;
 
     /**
      * @ORM\Column(type="float")

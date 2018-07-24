@@ -27,6 +27,7 @@ AppBundle\Entity\AuthToken:
             groups: ['auth-token']
 
 
+
 AppBundle\Entity\Meeting:
     attributes:
         #id:
@@ -85,4 +86,28 @@ AppBundle\Entity\Job:
             groups: ['user','job']
         user:
             groups: ['job']
+
+
+AppBundle\Entity\Project:
+    attributes:
+        id:
+            groups: ['project','projects','auth-token']
+        name:
+            groups: ['project','projects','auth-token']
+        description:
+            groups: ['project','auth-token']
+        price:
+            groups: ['project','auth-token']
+        cost:
+            groups: ['project','auth-token']
+        date_start:
+            groups: ['project','auth-token']
+        date_end:
+            groups: ['project','auth-token']
+        hour_pool:
+            groups: ['project','auth-token']
+        hour_spend:
+            groups: ['project','auth-token']
+        active:
+            groups: ['project','projects','auth-token']
 
