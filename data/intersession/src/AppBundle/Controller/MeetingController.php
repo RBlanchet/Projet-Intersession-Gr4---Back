@@ -23,7 +23,7 @@ class MeetingController extends BaseController
 {
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"meeting"})
-     * @Rest\Post("/projects/{projectId}/meetings/")
+     * @Rest\Post("/projects/{id}/meetings")
      */
     public function postMeetingsAction(Request $request)
     {

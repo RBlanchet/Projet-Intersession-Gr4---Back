@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Form\Type\JobType;
 use AppBundle\Entity\Job;
+use AppBundle\Entity\User;
 
 class JobController extends Controller {
 
@@ -30,37 +31,29 @@ class JobController extends Controller {
      * @Rest\Get("/users/{id}/jobs")
      */
     public function getJobAction(Request $request){
-        $user = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:User')
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
             ->find($request->get('id'));
 
         if (empty($user)){
             return $this->userNotFound();
         }
-        return $user;
+        return $user->getJob();
     }
 
     /**
-     * @Rest\View(serializerGroups={"job"}, statusCode=Response::HTTP_CREATED)
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"job"})
      * @Rest\Post("/jobs")
      */
-    public function postJobsAction(Request $request){
-        $user = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:User')
-            ->find($request->get('id'));
-
-        if(empty($user)){
-            return $this->userNotFound();
-        }
+    public function postJobAction(Request $request){
 
         $job = new Job();
-        $job->setUser($user);
-
         $form = $this->createForm(JobType::class, $job);
 
         $form->submit($request->request->all());
 
         if ($form->isValid()){
+            $job->setCreatedAt(new \DateTime('now'));
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($job);
             $em->flush();
