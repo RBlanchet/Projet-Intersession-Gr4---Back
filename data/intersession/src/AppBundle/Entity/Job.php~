@@ -33,6 +33,11 @@ class Job
     private $createdAt;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\User", mappedBy="job")
+     */
+    private $users;
+
+    /**
 
      * Get id.
      *
@@ -90,5 +95,6 @@ class Job
     {
         return $this->createdAt;
     }
+
 
 }

@@ -32,6 +32,7 @@ class Job
      */
     private $createdAt;
 
+
     /**
 
      * Get id.
@@ -90,5 +91,4 @@ class Job
     {
         return $this->createdAt;
     }
-
 }

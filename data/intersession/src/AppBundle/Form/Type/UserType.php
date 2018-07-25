@@ -12,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
 
 class UserType extends AbstractType
 {
@@ -20,6 +22,7 @@ class UserType extends AbstractType
         $builder->add('firstname');
         $builder->add('lastname');
         $builder->add('plainPassword');
+        $builder->add('job');
         $builder->add('email', EmailType::class);
         $builder->add('roles',CollectionType::class,[
         'entry_type'        => RoleType::class,

@@ -82,8 +82,7 @@ AppBundle\Entity\Job:
             groups: ['user','job','auth-token']
         name:
             groups: ['user','job','auth-token']
-        user:
-            groups: ['job']
+
 
 AppBundle\Entity\Project:
     attributes:
