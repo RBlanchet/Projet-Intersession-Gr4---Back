@@ -13,7 +13,7 @@ use JsonSerializable;
  * @ORM\Entity
  * @ORM\Table(name="roles")
  */
-class Role  implements JsonSerializable {
+class Role {
 
     /**
      * @ORM\Id
@@ -43,28 +43,6 @@ class Role  implements JsonSerializable {
     private $user;
 
 
-    public function __construct() {
-
-    }
-    public function jsonSerialize()
-    {
-        return array(
-            'project' . $this->id => array(
-                'id'            => $this->id,
-                'job'           => $this->job,
-                'project'       => $this->project,
-                'cost'          => $this->cost,
-                'user'          => $this->user,
-            )
-        );
-    }
-
-    public function getRelations()
-    {
-        return array(
-
-        );
-    }
     /**
      * Get id.
      *
