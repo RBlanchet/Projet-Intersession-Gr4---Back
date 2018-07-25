@@ -33,7 +33,6 @@ class User implements UserInterface
         $this->tasks = new ArrayCollection();
         $this->protectedRoles = new ArrayCollection();
         $this->meetings = new ArrayCollection();
-        $this->jobs = new ArrayCollection();
     }
 
     /**
