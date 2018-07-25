@@ -58,6 +58,10 @@ class UserController extends BaseController
      */
     public function getUsersAction(Request $request, $id)
     {
+        $validate = $this->checkDateValidate(new \Datetime('2019-01-01 00:00:00'), new \DateTime('2018-01-01 00:00:00'));
+        if (is_array($validate)) {
+            return View::create($validate, 400);
+        }
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         if ($user) {

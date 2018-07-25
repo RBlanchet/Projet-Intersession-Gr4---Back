@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Helper\AuthorizationHelper;
+use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Helper\JSONHelper;
 
@@ -68,6 +69,18 @@ abstract class BaseController extends Controller
             return $datetime;
         } else {
             return false;
+        }
+    }
+
+    public function checkDateValidate($dateStart, $dateEnd) {
+        if (is_object($dateStart) && is_object($dateEnd)) {
+            if ($dateEnd > $dateStart) {
+                return true;
+            } else {
+                return ['message' => 'La date de fin est avant la date de départ'];
+            }
+        } else {
+            return ['message' => 'Le format de date attendu doit être un Datetime'];
         }
     }
 
