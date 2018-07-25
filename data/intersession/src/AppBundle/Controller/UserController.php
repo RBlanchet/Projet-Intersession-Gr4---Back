@@ -65,7 +65,6 @@ class UserController extends BaseController
         } else {
             return $this->userNotFound();
         }
-
     }
 
     /**

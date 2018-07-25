@@ -21,6 +21,11 @@ class UserType extends AbstractType
         $builder->add('lastname');
         $builder->add('plainPassword');
         $builder->add('email', EmailType::class);
+        $builder->add('roles',CollectionType::class,[
+        'entry_type'        => RoleType::class,
+        'allow_add'         => true,
+        'error_bubbling'    =>false,
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

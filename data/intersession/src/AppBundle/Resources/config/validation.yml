@@ -72,3 +72,23 @@ AppBundle\Entity\Job:
             - NotNull: ~
             - Choice:
                 choices: ['Chef de projet', 'Lead Developpeur', 'Développeur Back', 'Developpeur Front', 'Intégrateur', 'Prestataire', 'Client']
+AppBundle\Entity\Sprint:
+    properties:
+        name:
+            - NotBlank: ~
+            - Type: string
+        dateStart:
+            - NotBlank: ~
+            - Date: ~
+        dateEnd:
+            - NotBlank: ~
+            - Date: ~
+AppBundle\Entity\Role:
+    properties:
+        cost:
+            - NotBlank: ~
+            - Type: int
+        user:
+            - NotBlank: ~
+        project:
+            - NotBlank: ~

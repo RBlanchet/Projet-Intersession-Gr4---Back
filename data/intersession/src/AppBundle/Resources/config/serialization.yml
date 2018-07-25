@@ -26,7 +26,6 @@ AppBundle\Entity\AuthToken:
         user:
             groups: ['auth-token']
 
-
 AppBundle\Entity\Meeting:
     attributes:
         #id:
@@ -80,9 +79,55 @@ AppBundle\Entity\TaskStatus:
 AppBundle\Entity\Job:
     attributes:
         id:
-            groups: ['user','job']
+            groups: ['user','job','auth-token']
         name:
-            groups: ['user','job']
+            groups: ['user','job','auth-token']
         user:
             groups: ['job']
+
+AppBundle\Entity\Project:
+    attributes:
+        id:
+            groups: ['project','projects','auth-token']
+        name:
+            groups: ['project','projects','auth-token']
+        description:
+            groups: ['project','auth-token']
+        price:
+            groups: ['project','auth-token']
+        cost:
+            groups: ['project','auth-token']
+        date_start:
+            groups: ['project','auth-token']
+        date_end:
+            groups: ['project','auth-token']
+        hour_pool:
+            groups: ['project','auth-token']
+        hour_spend:
+            groups: ['project','auth-token']
+        active:
+            groups: ['project','projects','auth-token']
+
+AppBundle\Entity\Sprint:
+    attributes:
+        #id:
+        #   groups: ['sprint']
+        name:
+            groups: ['sprint']
+        dateStart:
+            groups: ['sprint']
+        dateEnd:
+            groups: ['sprint']
+        users:
+            groups: ['sprint']
+        active:
+            groups: ['sprint']
+AppBundle\Entity\Role:
+    attributes:
+        cost:
+            groups: ['role','user']
+        user:
+            groups: ['role', 'project']
+        project:
+            groups: ['role', 'user']
 

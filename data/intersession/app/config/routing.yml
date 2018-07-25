@@ -13,6 +13,9 @@ jobs:
 meetings:
     type: rest
     resource: AppBundle\Controller\MeetingController
+projects:
+    type:   rest
+    resource: AppBundle\Controller\ProjectController
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 users:
@@ -24,3 +27,9 @@ meetings:
 auth-tokens:
     type:     rest
     resource: AppBundle\Controller\AuthTokenController
+sprints:
+    type:     rest
+    resource: AppBundle\Controller\SprintController
+roles:
+    type:     rest
+    resource: AppBundle\Controller\RoleController

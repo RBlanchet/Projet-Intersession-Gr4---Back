@@ -12,7 +12,6 @@ use JsonSerializable;
  * Class Job
  * @ORM\Entity
  * @ORM\Table(name="roles")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RoleRepository")
  */
 class Role {
 

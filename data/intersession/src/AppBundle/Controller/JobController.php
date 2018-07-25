@@ -37,7 +37,7 @@ class JobController extends Controller {
         if (empty($user)){
             return $this->userNotFound();
         }
-        return $user->getJobs();
+        return $user;
     }
 
     /**
