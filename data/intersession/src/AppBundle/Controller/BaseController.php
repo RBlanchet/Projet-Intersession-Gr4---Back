@@ -71,4 +71,39 @@ abstract class BaseController extends Controller
         }
     }
 
+    /**
+     * Calculate Hours Spend
+     *
+     * @param $dateStart
+     * @param $dateEnd
+     * @param $users
+     * @return float|int
+     */
+    public function timeSpend($dateStart, $dateEnd, $users){
+        $delta = date_diff($dateEnd,  $dateStart);
+        $hours = $delta->h;
+        $days = $delta->days;
+        if ($hours){
+            if (($days) >= 7){
+                $weeks = floor($days/7);
+                $weekEnds = 2*$weeks;
+                $days = $days - $weekEnds;
+            }
+            $hours = $days * 7 ;
+        }
+        else if ($days){
+            if ($days >= 7){
+                $weeks = floor($days/7);
+                $weekEnds = 2*$weeks;
+                $days = $days - $weekEnds;
+            }
+            else{
+               $days = floor($delta/24);
+            }
+            $hoursLeft = $delta % 24;
+            $hours = ($days * 7) + $hoursLeft;
+        }
+        return $hours * $users;
+    }
+
 }

@@ -30,7 +30,7 @@ class SprintType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'AppBundle\Entity\Meeting',
+            'data_class' => 'AppBundle\Entity\Sprint',
             'csrf_protection' => false
         ]);
     }

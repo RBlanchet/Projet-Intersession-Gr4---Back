@@ -41,12 +41,10 @@ class ProjectController extends BaseController
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project, ['validation_groups'=>['Default', 'New']]);
 
-
-
         $form->submit($request->request->all());
 
-        $dataStart = $this->stringToDatetime($request->request->all()['date_start']);
-        $dateEnd = $this->stringToDatetime($request->request->all()['date_end']);
+        $dateStart = $this->stringToDatetime($request->request->all()['startAt']);
+        $dateEnd = $this->stringToDatetime($request->request->all()['endAt']);
 
         if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
@@ -64,7 +62,7 @@ class ProjectController extends BaseController
 
     /**
      * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
-     * @Rest\Delete("/project/{id}")
+     * @Rest\Delete("/projects/{id}")
      */
     public function removeProjectAction(Request $request)
     {
@@ -83,23 +81,11 @@ class ProjectController extends BaseController
         }
     }
 
-
     /**
-     * @Rest\View(serializerGroups={"meeting"})
-     * @Rest\Patch("/project/{id}")
+     * @Rest\View()
+     * @Rest\Patch("/projects/{id}")
      */
-
-    public function patchMeetingAction(Request $request)
-    {
-        return $this->updateProject($request, true);
-    }
-
-    /**
-     * @param Request $request
-     * @param $clearMissing
-     * @return Project|\FOS\RestBundle\View\View|\Symfony\Component\Form\FormInterface
-     */
-    private function updateProject(Request $request, $clearMissing)
+    public function patchProjectAction(Request $request)
     {
         $project = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
@@ -110,18 +96,12 @@ class ProjectController extends BaseController
             return $this->projectNotFound();
         }
 
-        if ($clearMissing) {
-            $options = ['validation_groups'=>['Default', 'FullUpdate']];
-        } else {
-            $options = [];
-        }
+        $form = $this->createForm(ProjectType::class, $project);
 
-        $form = $this->createForm(Projectype::class, $project, $options);
+        $form->submit($request->request->all());
 
-        $form->submit($request->request->all(), $clearMissing);
-
-        $startAt = $this->stringToDatetime($request->request->all()['date_start']);
-        $endAt = $this->stringToDatetime($request->request->all()['date_end']);
+        $dateStart = $this->stringToDatetime($request->request->all()['startAt']);
+        $dateEnd = $this->stringToDatetime($request->request->all()['endAt']);
 
 
         if ($form->isValid() && $startAt && $endAt) {
@@ -181,14 +161,14 @@ class ProjectController extends BaseController
      */
     public function getProjectAction(Request $request)
     {
-        $projects = $this->get('doctrine.orm.entity_manager')
+        $project = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
-        return $projects;
+        return $project;
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
+     * @Rest\View(serializerGroups={"projects"})
      * @Rest\Get("/projects")
      */
     public function getProjectsAction(Request $request)
@@ -198,18 +178,21 @@ class ProjectController extends BaseController
             ->findAll();
 
         return $projects;
-
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
-     * @Rest\Get("/projects/users/{idUser}")
+     * @Rest\View()
+     * @Rest\Get("/projects/{id}/users")
      */
-    public function projectGetAllForUserAction($idUser)
+    public function getUsersByProjectAction(Request $request)
     {
-        $projects = $this->getDoctrine()
-            ->getRepository(Project::class);
-        return $projects->findAllProjectByIdUser($idUser);
-
+        $project = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->find($request->get('id'));
+        /* @var $project Project*/
+        if (empty($project)) {
+            return $this->projectNotFound();
+        }
+        return $project->getUsers();
     }
 }

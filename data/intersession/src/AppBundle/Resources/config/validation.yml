@@ -34,12 +34,6 @@ AppBundle\Entity\Task:
         name:
             - NotBlank: ~
             - Type: string
-        dateStart:
-            - NotBlank: ~
-            - Date: ~
-        dateEnd:
-            - NotBlank: ~
-            - Date: ~
         cost:
             - Type: int
             - GreaterThanOrEqual:
@@ -48,10 +42,6 @@ AppBundle\Entity\Task:
             - Type: int
         description:
             - Type: string
-        timeSpend:
-            - Type: int
-            - GreaterThanOrEqual:
-                value: 0
         parent:
             - Type: int
         project:
@@ -59,7 +49,7 @@ AppBundle\Entity\Task:
             - Type: int
         users:
             - Valid: ~
-            - AppBundle\Form\Validator\Constraint\PriceTypeUnique: ~
+            - AppBundle\Form\Validator\Constraint\UserEmailUnique: ~
 AppBundle\Entity\TaskStatus:
     properties:
         title:
@@ -77,12 +67,7 @@ AppBundle\Entity\Sprint:
         name:
             - NotBlank: ~
             - Type: string
-        dateStart:
-            - NotBlank: ~
-            - Date: ~
-        dateEnd:
-            - NotBlank: ~
-            - Date: ~
+
 AppBundle\Entity\Role:
     properties:
         cost:

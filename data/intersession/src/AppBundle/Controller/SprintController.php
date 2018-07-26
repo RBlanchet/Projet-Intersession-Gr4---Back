@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SprintController extends Controller
+class SprintController extends BaseController
 {
     /**
      * @Rest\View(serializerGroups={"sprint"}, statusCode=Response::HTTP_CREATED)

@@ -117,8 +117,6 @@ AppBundle\Entity\Sprint:
             groups: ['sprint']
         dateEnd:
             groups: ['sprint']
-        users:
-            groups: ['sprint']
         active:
             groups: ['sprint']
 AppBundle\Entity\Role:

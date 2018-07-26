@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
@@ -10,8 +10,10 @@ use AppBundle\Form\Type\TaskType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Controller\BaseController;
 
-class TaskController extends Controller {
+
+class TaskController extends BaseController {
 
     /**
      * @Rest\View(serializerGroups={"task"}, statusCode=Response::HTTP_CREATED)
@@ -139,27 +141,42 @@ class TaskController extends Controller {
         $task = $this->get('doctrine.orm.entity_manager')
         ->getRepository('AppBundle:Task')
         ->find($request->get('id'));
+        /* @var $task Task */
 
         if (empty($task)){
-
             return \FOS\RestBundle\View\View::create(['message' => 'Task not found'], Response::HTTP_NOT_FOUND);
         }
 
+
         $form = $this->createForm(TaskType::class, $task);
 
-        $form->submit($request->all(), false);
+        $form->submit($request->request->all(), false);
 
-        $startAt = $this->stringToDatetime($request->request->all()['startAt']);
-        $endAt = $this->stringToDatetime($request->request->all()['endAt']);
         if ($form->isValid())
         {
             $em = $this->get('doctrine.orm.entity_manager');
+            foreach ($task->getUsers() as $user){
+                $user->addTasks($task);
+                $em->persist($user);
+            }
+            $users = $task->getUsers();
+            if ($users){
+                $count = count($users);
+            }
+            else{
+                $count = 1;
+            }
 
-            $task->setCreatedAt(new \DateTime('now'));
-            $task->setCreatedBy($this->getUser()->getId());
-            $task->setDateStart($startAt);
-            $task->setDateEnd($endAt);
-            $task->setTimeSpend($endAt - $startAt);
+            $dateStart = $this->stringToDatetime($request->request->all()['dateStart']);
+            $endAt = $this->stringToDatetime($request->request->all()['endAt']);
+            if ($dateStart && $endAt){
+                $task->setDateStart($dateStart);
+                $task->setDateEnd($endAt);
+                $task->setTimeSpend($dateStart, $endAt, $count);
+            }
+
+
+            $em->merge($task);
             $em->flush();
             return $task;
         }

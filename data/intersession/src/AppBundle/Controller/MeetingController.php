@@ -152,10 +152,9 @@ class MeetingController extends BaseController
      * @Rest\View(serializerGroups={"meeting"})
      * @Rest\Patch("/meetings/{id}")
      */
-
     public function patchMeetingAction(Request $request)
     {
-        return $this->updateMeeting($request, true);
+        return $this->updateMeeting($request, false);
     }
 
     /**

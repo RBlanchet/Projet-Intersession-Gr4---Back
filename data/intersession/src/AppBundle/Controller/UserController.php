@@ -105,6 +105,21 @@ class UserController extends BaseController
         return $this->updateUser($request, false);
     }
 
+    /**
+     * @Rest\View()
+     * @Rest\Get("/users/{id}/projects")
+     */
+    public function getProjectsByUserAction(Request $request){
+        $user = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:User')
+            ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+        /* @var $user User */
+
+        if (empty($user)) {
+            return $this->userNotFound();
+        }
+        return $user->getProjects();
+    }
 
     /**
      * @param Request $request
