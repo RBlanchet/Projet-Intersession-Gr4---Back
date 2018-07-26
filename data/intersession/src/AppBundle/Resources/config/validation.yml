@@ -4,16 +4,16 @@ AppBundle\Entity\User:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
     properties:
         firstname:
-            - NotBlank: ~
+            - NotBlank: { groups: [New] }
             - Type: string
         lastname:
-            - NotBlank: ~
+            - NotBlank: { groups: [New] }
             - Type: string
         email:
-            - NotBlank: ~
+            - NotBlank: { groups: [New] }
             - Email: ~
         plainPassword:
-            - NotBlank: { groups: [New, FullUpdate] }
+            - NotBlank: { groups: [New] }
             - Type: string
             - Length:
                 min: 4
