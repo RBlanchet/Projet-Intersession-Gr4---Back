@@ -81,13 +81,13 @@ composer update
 echo " *** DISPLAY VERSION COMPOSER  *** "
 composer -V
 
-sudo sed -i 's/DocumentRoot \/var\/www\/html/ DocumentRoot \/var\/www\/html\/intersession\/web\n<Directory \/var\/www\/html>\nAllowOverride All\nOrder Allow,Deny\nAllow from All\n<\/Directory>/g' 000-default.conf
+sudo sed -i 's/DocumentRoot \/var\/www\/html/ DocumentRoot \/var\/www\/html\/intersession\/web\n/<Directory \/var\/www\/html>\n/AllowOverride All\n/Order Allow,Deny\n/Allow from All\n/<\/Directory>/g' /etc/apache2/site-available/000-default.conf
 
 cd /var/www/html/intersession
 
 echo " *** INSTALL VENDOR *** "
 composer install
-mysql -uroot -p0000 -e "create database projet_intersession";
+sudo sed -i 's/database_password: 0/database_password: 0000/' app/config/parameters.yml
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load
