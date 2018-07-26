@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class TaskType extends AbstractType
 {
@@ -18,9 +19,8 @@ class TaskType extends AbstractType
         $builder->add('sprint');
         $builder->add('time_spend');
         $builder->add('status');
-        $builder->add('dateStart');
-        $builder->add('dateEnd');
-        $builder->add('project');
+        $builder->add('startAt',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd HH:mm'));
+        $builder->add('endAt',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd HH:mm'));
         $builder->add('users', CollectionType::class,[
             'entry_type'        => UserType::class,
             'allow_add'         => true,

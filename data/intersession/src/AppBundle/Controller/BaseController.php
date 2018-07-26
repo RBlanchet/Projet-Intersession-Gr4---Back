@@ -82,8 +82,10 @@ abstract class BaseController extends Controller
      */
     public function timeSpend($dateStart, $dateEnd, $users){
         $delta = date_diff($dateEnd,  $dateStart);
-        $hours = $delta->h;
-        $days = $delta->days;
+        dump($delta);
+        $hours = $delta->format("%h");
+        $days = $delta->format("%a");
+        dump($days);
         if ($hours){
             if (($days) >= 7){
                 $weeks = floor($days/7);
@@ -115,8 +117,8 @@ abstract class BaseController extends Controller
                 return ['message' => 'La date de fin est avant la date de départ'];
             }
         } else {
+            return ['message' => 'Le format de date attendu doit être un Datetime'];
+
         }
     }
-
-            return ['message' => 'Le format de date attendu doit être un Datetime'];
 }

@@ -331,8 +331,8 @@ class AppFixtures extends Fixture
             $task->setName('Task ' . $k);
             $task->setDescription('Description de la tâche numero ' . $k);
             $task->setCost(rand(1, 500));
-            $task->setDateStart(new \DateTime($v['date_start']));
-            $task->setDateEnd(new \DateTime($v['date_end']));
+            $task->setStartAt(new \DateTime($v['date_start']));
+            $task->setEndAt(new \DateTime($v['date_end']));
             $task->setCreatedAt(new \DateTime('now'));
             $task->setCreatedBy($userArray[rand(0, count($userArray) - 1)]->getId());
             $task->setTimeSpend(rand(20, 200));

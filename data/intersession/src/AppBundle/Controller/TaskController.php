@@ -21,28 +21,61 @@ class TaskController extends BaseController {
      */
     public function postTasksAction(Request $request)
     {
+        $project = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->find($request->get("id"));
+
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
-
+        $users =[];
         $form->submit($request->request->all());
+        if (array_key_exists('startAt', $request->request->all())) {
+            $startAt = new \DateTime($request->request->all()['startAt']);
+        }
+        if (array_key_exists('endAt', $request->request->all())) {
+            $endAt = new \DateTime($request->request->all()['endAt']);
+        }
+        if (array_key_exists('cost', $request->request->all())) {
+            $cost = $request->request->all()['cost'];
+        }
+        if (array_key_exists('users', $request->request->all())) {
+            $users = $request->request->all()['users'];
+        }
 
-            $startAt = $this->stringToDatetime($request->request->all()['startAt']);
-            $endAt = $this->stringToDatetime($request->request->all()['endAt']);
-            if ($form->isValid())
+            if ($users){
+                $count = count($users);
+            }
+            else{
+                $count = 1;
+            }
+            if ($form->isValid() && $startAt && $endAt)
             {
                 $em = $this->get('doctrine.orm.entity_manager');
-                foreach ($task->getUsers() as $user){
-                    $user->setTasks($task);
-                    $em->persist($user);
-                }
+                $task->setProject($project);
                 $task->setCreatedAt(new \DateTime('now'));
                 $task->setCreatedBy($this->getUser()->getId());
-                $task->setDateStart($startAt);
-                $task->setDateEnd($endAt);
-                $task->setTimeSpend($endAt - $startAt);
+                $task->setStartAt($startAt);
+                $task->setEndAt($endAt);
+                $task->setActive(1);
+                $task->setTimeSpend($this->timeSpend($startAt, $endAt, $count));
+                if (empty($cost)){
+
+                }
+                else{
+                    $task->setCost($cost);
+                }
+
+                foreach ($users as $user){
+                    $attributed = $this->get('doctrine.orm.entity_manager')
+                        ->getRepository('AppBundle:User')
+                        ->find($request->get($user));
+                    /* @var $attributed User*/
+                    $attributed->addTask($task);
+                    $em->persist($attributed);
+                }
+                $em->persist($task);
                 $em->flush();
                 return $task;
-
             }
         else {
             return $form;
@@ -60,8 +93,9 @@ class TaskController extends BaseController {
             ->findAll();
         return $tasks;
     }
+
     /**
-     * @Rest\View(serializerGroups={"task"})
+     * @Rest\View(serializerGroups={"project"})
      * @Rest\Get("/projects/{id}/tasks")
      */
     public function getTasksByProjectAction(Request $request)
@@ -101,10 +135,12 @@ class TaskController extends BaseController {
         $user = $this->getDoctrine()->getRepository(User::class)->find($request->get('userId'));
 
         if ($user) {
-            $tasks = $user->getTasks();
+            $all = $user->getTasks();
             $attributedTasks = [];
-            foreach( $tasks as $task){
-                if ($task->getProject() == $request->get('projectId')){
+            foreach( $all as $task){
+                $filter = $this->getDoctrine()->getRepository(Task::class)->find($request->get('userId'));
+
+                if ($filter->getProject() == $request->get('projectId')){
                     $attributedTasks[] = $task;
                 }
             }
@@ -137,51 +173,68 @@ class TaskController extends BaseController {
      * @Rest\View(serializerGroups={"task"})
      * @Rest\Patch("/tasks/{id}")
      */
-    public function patchTaskAction(Request $request){
+    public function patchTaskAction(Request $request)
+    {
         $task = $this->get('doctrine.orm.entity_manager')
-        ->getRepository('AppBundle:Task')
-        ->find($request->get('id'));
+            ->getRepository('AppBundle:Task')
+            ->find($request->get('id'));
         /* @var $task Task */
 
-        if (empty($task)){
+        if (empty($task)) {
             return \FOS\RestBundle\View\View::create(['message' => 'Task not found'], Response::HTTP_NOT_FOUND);
         }
-
-
+        $startAt="";
+        $endAt="";
+        $cost="";
+        $users ="";
         $form = $this->createForm(TaskType::class, $task);
-
         $form->submit($request->request->all(), false);
+        if (array_key_exists('startAt', $request->request->all())) {
+            $startAt = $this->stringToDatetime($request->request->all()['startAt']);
+        }
+        if (array_key_exists('endAt', $request->request->all())) {
+            $endAt = $this->stringToDatetime($request->request->all()['endAt']);
+        }
+        if (array_key_exists('cost', $request->request->all())) {
+            $cost = $request->request->all()['cost'];
+        }
+        if (array_key_exists('users', $request->request->all())) {
+            $users = $request->request->all()['users'];
+        }
+        if ($form->isValid()) {
 
-        if ($form->isValid())
-        {
-            $em = $this->get('doctrine.orm.entity_manager');
-            foreach ($task->getUsers() as $user){
-                $user->addTasks($task);
-                $em->persist($user);
+
+
+            foreach ($task->getUsers() as $user) {
+                $attributed = $this->get('doctrine.orm.entity_manager')
+                    ->getRepository('AppBundle:User')
+                    ->find($request->get($user));
+                /* @var $attributed User */
+                $attributed->addTask($task);
             }
             $users = $task->getUsers();
-            if ($users){
+            if ($users) {
                 $count = count($users);
-            }
-            else{
+            } else {
                 $count = 1;
             }
 
-            $dateStart = $this->stringToDatetime($request->request->all()['dateStart']);
-            $endAt = $this->stringToDatetime($request->request->all()['endAt']);
-            if ($dateStart && $endAt){
-                $task->setDateStart($dateStart);
-                $task->setDateEnd($endAt);
-                $task->setTimeSpend($dateStart, $endAt, $count);
+            if ($startAt) {
+                $task->setStartAt($startAt);
+            }
+            if ($endAt) {
+                $task->setEndAt($endAt);
             }
 
-
-            $em->merge($task);
+            if ($startAt && $endAt && !$cost) {
+                $task->setTimeSpend($this->timeSpend($startAt, $endAt, $count));
+            }
+            $em = $this->get('doctrine.orm.entity_manager');
+            $em->persist($task);
             $em->flush();
             return $task;
-        }
-        else {
-            return $form;
+        } else {
+            return null;
         }
     }
 

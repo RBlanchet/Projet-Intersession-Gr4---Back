@@ -44,9 +44,6 @@ AppBundle\Entity\Task:
             - Type: string
         parent:
             - Type: int
-        project:
-            - NotBlank: ~
-            - Type: int
         users:
             - Valid: ~
             - AppBundle\Form\Validator\Constraint\UserEmailUnique: ~

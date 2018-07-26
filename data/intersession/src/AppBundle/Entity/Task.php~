@@ -163,6 +163,53 @@ class Task {
         return $this->cost;
     }
 
+    /**
+     * Set dateStart.
+     *
+     * @param \DateTime $dateStart
+     *
+     * @return Task
+     */
+    public function setDateStart($dateStart)
+    {
+        $this->dateStart = $dateStart;
+
+        return $this;
+    }
+
+    /**
+     * Get dateStart.
+     *
+     * @return \DateTime
+     */
+    public function getDateStart()
+    {
+        return $this->dateStart;
+    }
+
+    /**
+     * Set dateEnd.
+     *
+     * @param \DateTime $dateEnd
+     *
+     * @return Task
+     */
+    public function setDateEnd($dateEnd)
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get dateEnd.
+     *
+     * @return \DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->dateEnd;
+    }
 
     /**
      * Set status.
@@ -429,53 +476,5 @@ class Task {
         $this->users = $users;
 
         return $this;
-    }
-
-    /**
-     * Set startAt
-     *
-     * @param \DateTime $startAt
-     *
-     * @return Task
-     */
-    public function setStartAt(\DateTime $startAt)
-    {
-        $this->startAt = $startAt;
-
-        return $this;
-    }
-
-    /**
-     * Get startAt
-     *
-     * @return \DateTime
-     */
-    public function getStartAt()
-    {
-        return $this->startAt;
-    }
-
-    /**
-     * Set endAt
-     *
-     * @param \DateTime $endAt
-     *
-     * @return Task
-     */
-    public function setEndAt(\DateTime $endAt)
-    {
-        $this->endAt = $endAt;
-
-        return $this;
-    }
-
-    /**
-     * Get endAt
-     *
-     * @return \DateTime
-     */
-    public function getEndAt()
-    {
-        return $this->endAt;
     }
 }

@@ -25,10 +25,10 @@ class ProjectType extends AbstractType
         $builder->add('cost');
         $builder->add('hour_pool');
         $builder->add('hour_spend');
-        $builder->add('date_start', null, array(
+        $builder->add('startAt', null, array(
             'mapped' => false,
         ));
-        $builder->add('date_end', null, array(
+        $builder->add('endAt', null, array(
             'mapped' => false,
         ));
         $builder->add('active', CheckboxType::class);
