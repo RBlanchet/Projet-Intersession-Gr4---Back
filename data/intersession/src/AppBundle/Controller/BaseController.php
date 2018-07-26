@@ -120,5 +120,7 @@ abstract class BaseController extends Controller
             return ['message' => 'Le format de date attendu doit être un Datetime'];
 
         }
+        return ['message' => 'Le format de date attendu doit être un Datetime'];
     }
 }
+
