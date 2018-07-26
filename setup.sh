@@ -1,5 +1,4 @@
 
-
 echo "
  ____________________________________
 |                                    |
@@ -47,7 +46,18 @@ sudo apt-get install openssl -y
 
 echo " *** INSTALL PHP MYSQL *** "
 sudo apt-get install php7.2-mysql -y
-
+sudo apt-get install debconf-utils -y > /dev/null
+debconf-set-selections <<< "mysql-server mysql-server/root_password password 0000"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password 0000"
+sudo apt-get install mysql-server mysql-client mysql-common -y > /dev/null
+echo "UPDATE"
+sudo apt-get update
+# On active le mode Rewrite
+sudo a2enmod rewrite
+# Recharge la config d'apache
+sudo /etc/init.d/apache2 reload
+# Redemarre apache2
+sudo service apache2 restart
 echo "
  ____________________________________
 |                                    |
@@ -65,48 +75,22 @@ php -r "unlink('composer-setup.php');"
 
 echo " *** DEPLACE COMPOSER *** "
 sudo mv composer.phar /usr/local/bin/composer
-
+echo "UPDATE"
+sudo apt-get update
+composer update
 echo " *** DISPLAY VERSION COMPOSER  *** "
 composer -V
 
-cd /var/www/html
-
-echo "
- ____________________________________
-|                                    |
-|              SYMFONY               |
- ____________________________________
-"
-
-echo " *** INSTALL SYMFONY  *** "
-
-#@composer create-project symfony/framework-standard-edition intersession "3.4.*"
+sudo sed -i 's/DocumentRoot \/var\/www\/html/ DocumentRoot \/var\/www\/html\/intersession\/web\n<Directory \/var\/www\/html>\nAllowOverride All\nOrder Allow,Deny\nAllow from All\n<\/Directory>/g' 000-default.conf
 
 cd /var/www/html/intersession
 
+echo " *** INSTALL VENDOR *** "
 composer install
-
-
-echo "
- ____________________________________
-|                                    |
-|              SETUP                 |
- ____________________________________
-"
-
-echo " *** RESTART APACHE2  *** "
-
-# On ajoute vagrant aux users
-sudo adduser vagrant www-data
-
-# On active le mode Rewrite
-sudo a2enmod rewrite
-# Recharge la config d'apache
-sudo /etc/init.d/apache2 reload
-# Redemarre apache2
-sudo service apache2 restart
-
-#apt-get install mysql-server mysql-client mysql-common -y
+mysql -uroot -p0000 -e "create database projet_intersession";
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force
+php bin/console doctrine:fixtures:load
 
 
 
