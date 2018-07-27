@@ -65,6 +65,11 @@ class User implements UserInterface
     protected $email;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $actived;
+
+    /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
      */
     private $projects;
@@ -361,4 +366,21 @@ class User implements UserInterface
     {
         $this->plainPassword = $plainPassword;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getActived()
+    {
+        return $this->actived;
+    }
+
+    /**
+     * @param mixed $actived
+     */
+    public function setActived($actived)
+    {
+        $this->actived = $actived;
+    }
+
 }

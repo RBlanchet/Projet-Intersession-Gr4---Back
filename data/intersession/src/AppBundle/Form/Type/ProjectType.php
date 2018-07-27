@@ -24,14 +24,14 @@ class ProjectType extends AbstractType
         $builder->add('price');
         $builder->add('cost');
         $builder->add('hour_pool');
-        $builder->add('hour_spend');
-        $builder->add('startAt', null, array(
+        //$builder->add('hour_spend');
+        $builder->add('date_start', null, array(
             'mapped' => false,
         ));
-        $builder->add('endAt', null, array(
+        $builder->add('date_end', null, array(
             'mapped' => false,
         ));
-        $builder->add('active', CheckboxType::class);
+        //$builder->add('active', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

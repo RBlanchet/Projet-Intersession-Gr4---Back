@@ -42,6 +42,7 @@ class UserController extends BaseController
             // le mot de passe en claire est encodé avant la sauvegarde
             $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($encoded);
+            $user->setActived(true);
 
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($user);
@@ -58,14 +59,14 @@ class UserController extends BaseController
      */
     public function getUsersAction(Request $request, $id)
     {
-        $validate = $this->checkDateValidate(new \Datetime('2019-01-01 00:00:00'), new \DateTime('2018-01-01 00:00:00'));
-        if (is_array($validate)) {
-            return View::create($validate, 400);
-        }
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         if ($user) {
-            return $user;
+            if ($this->isActived($user)) {
+                return $user;
+            } else {
+                return $this->errorMessage('Cet utilisateur est non actif');
+            }
         } else {
             return $this->userNotFound();
         }
@@ -77,7 +78,9 @@ class UserController extends BaseController
      */
     public function getAllUsersAction(Request $request)
     {
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(
+            'actived' => true
+        ));
 
         return $users;
     }
@@ -176,7 +179,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\View(statusCode=Response::HTTP_OK)
      * @Rest\Delete("/users/{id}")
      */
     public function removeUserAction(Request $request)
@@ -187,10 +190,14 @@ class UserController extends BaseController
         /* @var $user User */
 
         if ($user) {
-            $em->remove($user);
+            if ($user->getActived()) {
+                $user->setActived(false);
+            } else {
+                $user->setActived(true);
+            }
+            $em->persist($user);
             $em->flush();
-
-            return View::create(["message" => "L'utilisateur à bien été supprimé."]);
+            return View::create(["message" => "L'utilisateur à bien été désactivé."], 200);
         } else {
             return $this->userNotFound();
         }

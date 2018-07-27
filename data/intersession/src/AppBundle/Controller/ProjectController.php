@@ -48,15 +48,26 @@ class ProjectController extends BaseController
         $dateStart = $this->stringToDatetime($request->request->all()['date_start']);
         $dateEnd = $this->stringToDatetime($request->request->all()['date_end']);
 
-        if ($form->isValid()) {
+        $validate = $this->checkDateValidate($dateStart, $dateEnd);
+
+        if ($form->isValid() && !is_array($validate)) {
             $em = $this->get('doctrine.orm.entity_manager');
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
             $project->setDateStart($dateStart);
             $project->setDateEnd($dateEnd);
+            $project->setActive(true);
+            if (isset($request->request->all()['hour_pool'])) {
+                $project->setHourPool($request->request->all()['hour_pool']);
+            } else {
+                $project->setHourPool(0);
+            }
+            $project->setHourSpend(0);
             $em->persist($project);
             $em->flush();
             return $project;
+        } elseif (is_array($validate)) {
+            return View::create($validate, 401);
         } else {
             return $form;
         }

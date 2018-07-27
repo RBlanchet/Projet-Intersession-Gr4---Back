@@ -93,7 +93,7 @@ AppBundle\Entity\Project:
         name:
             groups: ['project','projects','auth-token','task']
         description:
-            groups: ['project','auth-token']
+            groups: ['project','auth-token', 'projects']
         price:
             groups: ['project','auth-token', 'projects']
         cost:
@@ -103,7 +103,7 @@ AppBundle\Entity\Project:
         date_end:
             groups: ['project','projects','auth-token']
         hour_pool:
-            groups: ['project','auth-token']
+            groups: ['project','auth-token', 'projects']
         hour_spend:
             groups: ['project','auth-token']
         active:

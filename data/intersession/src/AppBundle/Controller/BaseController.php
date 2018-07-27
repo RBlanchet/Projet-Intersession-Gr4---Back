@@ -12,6 +12,7 @@ use AppBundle\Helper\AuthorizationHelper;
 use FOS\RestBundle\View\View;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Helper\JSONHelper;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class BaseController extends Controller
 {
@@ -118,9 +119,20 @@ abstract class BaseController extends Controller
             }
         } else {
             return ['message' => 'Le format de date attendu doit être un Datetime'];
-
         }
-        return ['message' => 'Le format de date attendu doit être un Datetime'];
+    }
+
+    public function isActived($user) {
+        return $user->getActived();
+    }
+
+    public function isDesactivated($user) {
+        return !$user->getActived();
+    }
+
+    public function errorMessage($message)
+    {
+        return \FOS\RestBundle\View\View::create(['message' => $message], Response::HTTP_BAD_REQUEST);
     }
 }
 

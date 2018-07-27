@@ -41,6 +41,8 @@ class AuthTokenController extends Controller
 
         if (!$user) { // L'utilisateur n'existe pas
             return $this->invalidCredentials();
+        } elseif ($user->getActived() == false) {
+            return $this->isDesactivated();
         }
 
         $encoder = $this->get('security.password_encoder');
@@ -85,6 +87,11 @@ class AuthTokenController extends Controller
 
     private function invalidCredentials()
     {
-        return \FOS\RestBundle\View\View::create(['message' => 'Invalid credentials'], Response::HTTP_BAD_REQUEST);
+        return \FOS\RestBundle\View\View::create(['message' => 'Identifiants incorrect, veuillez recommencer'], Response::HTTP_BAD_REQUEST);
+    }
+
+    private function isDesactivated()
+    {
+        return \FOS\RestBundle\View\View::create(['message' => 'Cet utilisateur est désactivé, veuillez contacter l\'administrateur du site.'], Response::HTTP_BAD_REQUEST);
     }
 }
