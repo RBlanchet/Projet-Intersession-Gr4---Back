@@ -345,12 +345,12 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
-        foreach ($tasksArray as $k => $v) {
-            if ($tasks[$k + 1]['parentId']) {
-                $v->setParent($tasksArray[$tasks[$k + 1]['parentId']]);
-                $manager->persist($v);
-            }
-        }
+//        foreach ($tasksArray as $k => $v) {
+//            if ($tasks[$k + 1]['parentId']) {
+//                $v->addParent($tasksArray[$tasks[$k + 1]['parentId']]);
+//                $manager->persist($v);
+//            }
+//        }
 
         $manager->flush();
 
