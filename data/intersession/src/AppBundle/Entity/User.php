@@ -89,7 +89,8 @@ class User implements UserInterface
     private $meetings;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Job")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $job;
 
