@@ -99,9 +99,9 @@ AppBundle\Entity\Project:
         cost:
             groups: ['project','auth-token']
         date_start:
-            groups: ['project','auth-token']
+            groups: ['project','projects','auth-token']
         date_end:
-            groups: ['project','auth-token']
+            groups: ['project','projects','auth-token']
         hour_pool:
             groups: ['project','auth-token']
         hour_spend:

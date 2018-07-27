@@ -55,42 +55,42 @@ class AppFixtures extends Fixture
             1 => array(
                 "firstname" => "Admin",
                 "lastname"  => "Admin",
-                "email"     => "admin@truite-tracker.com",
+                "email"     => "admin@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_1
             ),
             2 => array(
                 "firstname" => "LD",
                 "lastname"  => "LD",
-                "email"     => "ld@truite-tracker.com",
+                "email"     => "ld@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_2
             ),
             3 => array(
                 "firstname" => "CP",
                 "lastname"  => "CP",
-                "email"     => "cp@truite-tracker.com",
+                "email"     => "cp@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_3
             ),
             4 => array(
                 "firstname" => "Dev",
                 "lastname"  => "Dev",
-                "email"     => "dev@truite-tracker.com",
+                "email"     => "dev@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_4
             ),
             5 => array(
                 "firstname" => "Dev 2",
                 "lastname"  => "Dev 2",
-                "email"     => "dev-2@truite-tracker.com",
+                "email"     => "dev-2@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_4
             ),
             6 => array(
                 "firstname" => "Dev 3",
                 "lastname"  => "Dev 3",
-                "email"     => "dev-3@truite-tracker.com",
+                "email"     => "dev-3@amagantt.com",
                 "password"  => "12345",
                 "job"       => $job_4
             ),

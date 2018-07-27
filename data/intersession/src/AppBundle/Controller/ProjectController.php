@@ -41,16 +41,18 @@ class ProjectController extends BaseController
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project, ['validation_groups'=>['Default', 'New']]);
 
+
+
         $form->submit($request->request->all());
 
-        $dateStart = $this->stringToDatetime($request->request->all()['startAt']);
-        $dateEnd = $this->stringToDatetime($request->request->all()['endAt']);
+        $dateStart = $this->stringToDatetime($request->request->all()['date_start']);
+        $dateEnd = $this->stringToDatetime($request->request->all()['date_end']);
 
         if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
-            $project->setDateStart($dataStart);
+            $project->setDateStart($dateStart);
             $project->setDateEnd($dateEnd);
             $em->persist($project);
             $em->flush();
@@ -81,11 +83,23 @@ class ProjectController extends BaseController
         }
     }
 
+
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"project"})
      * @Rest\Patch("/projects/{id}")
      */
+
     public function patchProjectAction(Request $request)
+    {
+        return $this->updateProject($request, false);
+    }
+
+    /**
+     * @param Request $request
+     * @param $clearMissing
+     * @return Project|\FOS\RestBundle\View\View|\Symfony\Component\Form\FormInterface
+     */
+    private function updateProject(Request $request, $clearMissing)
     {
         $project = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
@@ -96,22 +110,41 @@ class ProjectController extends BaseController
             return $this->projectNotFound();
         }
 
-        $form = $this->createForm(ProjectType::class, $project);
+        if ($clearMissing) {
+            $options = ['validation_groups'=>['Default', 'FullUpdate']];
+        } else {
+            $options = [];
+        }
 
-        $form->submit($request->request->all());
+        $form = $this->createForm(ProjectType::class, $project, $options);
 
-        $dateStart = $this->stringToDatetime($request->request->all()['startAt']);
-        $dateEnd = $this->stringToDatetime($request->request->all()['endAt']);
+        $form->submit($request->request->all(), $clearMissing);
 
+        if (isset($request->request->all()['date_start'])) {
+            $startAt = $this->stringToDatetime($request->request->all()['date_start']);
+        } else {
+            $startAt = true;
+        }
+
+        if (isset($request->request->all()['date_end'])) {
+            $endAt = $this->stringToDatetime($request->request->all()['date_end']);
+        } else {
+            $endAt = true;
+        }
 
         if ($form->isValid() && $startAt && $endAt) {
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
-            $project->setDateStart($dataStart);
-            $project->setDateEnd($dateEnd);
+            if (is_object($startAt)) {
+                $project->setDateStart($startAt);
+            }
+            if (is_object($endAt)) {
+                $project->setDateEnd($endAt);
+            }
             $em = $this->get('doctrine.orm.entity_manager');
             $em->merge($project);
             $em->flush();
+
             return $project;
         } elseif (!$startAt || !$endAt) {
             return View::create(["message" => "Le format des dates n'est pas compatible."], 500);
@@ -161,14 +194,14 @@ class ProjectController extends BaseController
      */
     public function getProjectAction(Request $request)
     {
-        $project = $this->get('doctrine.orm.entity_manager')
+        $projects = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
-        return $project;
+        return $projects;
     }
 
     /**
-     * @Rest\View(serializerGroups={"projects"})
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
      * @Rest\Get("/projects")
      */
     public function getProjectsAction(Request $request)
@@ -178,21 +211,18 @@ class ProjectController extends BaseController
             ->findAll();
 
         return $projects;
+
     }
 
     /**
-     * @Rest\View()
-     * @Rest\Get("/projects/{id}/users")
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
+     * @Rest\Get("/projects/users/{idUser}")
      */
-    public function getUsersByProjectAction(Request $request)
+    public function projectGetAllForUserAction($idUser)
     {
-        $project = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:Project')
-            ->find($request->get('id'));
-        /* @var $project Project*/
-        if (empty($project)) {
-            return $this->projectNotFound();
-        }
-        return $project->getUsers();
+        $projects = $this->getDoctrine()
+            ->getRepository(Project::class);
+        return $projects->findAllProjectByIdUser($idUser);
+
     }
 }
