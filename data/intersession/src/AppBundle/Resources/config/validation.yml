@@ -18,6 +18,8 @@ AppBundle\Entity\User:
             - Length:
                 min: 4
                 max: 50
+        job:
+            - NotBlank: { groups: [New]}
 
 AppBundle\Entity\Credentials:
     properties:
