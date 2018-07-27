@@ -95,9 +95,9 @@ AppBundle\Entity\Project:
         description:
             groups: ['project','auth-token']
         price:
-            groups: ['project','auth-token']
+            groups: ['project','auth-token', 'projects']
         cost:
-            groups: ['project','auth-token']
+            groups: ['project','auth-token', 'projects']
         date_start:
             groups: ['project','projects','auth-token']
         date_end:

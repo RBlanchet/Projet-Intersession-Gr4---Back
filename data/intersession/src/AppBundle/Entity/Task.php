@@ -351,7 +351,7 @@ class Task {
      *
      * @return Task
      */
-    public function setParent(\AppBundle\Entity\Task $parent = null)
+    public function setParent($parent = null)
     {
         $this->parent = $parent;
 

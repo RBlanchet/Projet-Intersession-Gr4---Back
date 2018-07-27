@@ -327,7 +327,9 @@ class AppFixtures extends Fixture
             } else {
                 $task->setSprint($sprintsArray[$randSprint]);
             }
-            $task->setParent(null);
+            if ($v['parentId']) {
+                $task->setParent($v['parentId']);
+            }
             $task->setName('Task ' . $k);
             $task->setDescription('Description de la tâche numero ' . $k);
             $task->setCost(rand(1, 500));
@@ -345,14 +347,6 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
-//        foreach ($tasksArray as $k => $v) {
-//            if ($tasks[$k + 1]['parentId']) {
-//                $v->addParent($tasksArray[$tasks[$k + 1]['parentId']]);
-//                $manager->persist($v);
-//            }
-//        }
-
-        $manager->flush();
 
         // Tasks Status
 
