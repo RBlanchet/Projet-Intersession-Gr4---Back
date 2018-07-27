@@ -122,12 +122,12 @@ abstract class BaseController extends Controller
         }
     }
 
-    public function isActived($user) {
-        return $user->getActived();
+    public function isActived($item) {
+        return $item->getActive();
     }
 
-    public function isDesactivated($user) {
-        return !$user->getActived();
+    public function isDesactivated($item) {
+        return !$item->getActive();
     }
 
     public function errorMessage($message)

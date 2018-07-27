@@ -103,7 +103,7 @@ class AppFixtures extends Fixture
             $user->setFirstname($v['firstname']);
             $user->setJob($v['job']);
             $user->setPassword('$2y$12$lHlUj31auOmaDuFHQU.EheSTAFM.S6GVrNJC8LHU5yKf2kIXpJ.Q.');
-            $user->setActived(true);
+            $user->setActive(true);
 
             $manager->persist($user);
 

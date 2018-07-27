@@ -67,7 +67,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $actived;
+    protected $active;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
@@ -370,17 +370,17 @@ class User implements UserInterface
     /**
      * @return mixed
      */
-    public function getActived()
+    public function getActive()
     {
-        return $this->actived;
+        return $this->active;
     }
 
     /**
-     * @param mixed $actived
+     * @param mixed $active
      */
-    public function setActived($actived)
+    public function setActive($active)
     {
-        $this->actived = $actived;
+        $this->active = $active;
     }
 
 }

@@ -74,7 +74,7 @@ class ProjectController extends BaseController
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\View(statusCode=Response::HTTP_OK)
      * @Rest\Delete("/projects/{id}")
      */
     public function removeProjectAction(Request $request)
@@ -85,10 +85,16 @@ class ProjectController extends BaseController
         /* @var $project Project */
 
         if ($project) {
-            $em->remove($project);
+            if ($project->getActive()) {
+                $message = 'Le projet à bien été desactivé';
+                $project->setActive(false);
+            } else {
+                $message = 'Le projet à bien été activé';
+                $project->setActive(true);
+            }
+            $em->persist($project);
             $em->flush();
-
-            return View::create(["message" => "Le projet à bien été supprimé."]);
+            return View::create(["message" => $message]);
         } else {
             return $this->projectNotFound();
         }
@@ -208,6 +214,17 @@ class ProjectController extends BaseController
         $projects = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
+
+        if ($projects) {
+            if ($this->isActived($projects)) {
+                return $projects;
+            } else {
+                return $this->errorMessage('Ce projet est non actif');
+            }
+        } else {
+            return $this->projectNotFound();
+        }
+
         return $projects;
     }
 

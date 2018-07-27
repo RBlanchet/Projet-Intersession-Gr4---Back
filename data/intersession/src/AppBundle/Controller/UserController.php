@@ -42,7 +42,7 @@ class UserController extends BaseController
             // le mot de passe en claire est encodé avant la sauvegarde
             $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($encoded);
-            $user->setActived(true);
+            $user->setActive(true);
 
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($user);
@@ -190,10 +190,10 @@ class UserController extends BaseController
         /* @var $user User */
 
         if ($user) {
-            if ($user->getActived()) {
-                $user->setActived(false);
+            if ($user->getActive()) {
+                $user->setActive(false);
             } else {
-                $user->setActived(true);
+                $user->setActive(true);
             }
             $em->persist($user);
             $em->flush();
