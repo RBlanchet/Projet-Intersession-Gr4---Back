@@ -81,14 +81,13 @@ composer update
 echo " *** DISPLAY VERSION COMPOSER  *** "
 composer -V
 
-sudo sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/intersession\/web\n<Directory \/var\/www\/html>\nAllowOverride All Order Allow,Deny Allow from All\n<\/Directory>/" /etc/apache2/sites-available/000-default.conf
+sudo sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/intersession\/web\n<Directory \/var\/www\/html>\nAllowOverride All\nOrder Allow,Deny\nAllow from All\n<\/Directory>/" /etc/apache2/sites-available/000-default.conf
 
 cd /var/www/html/intersession
 
 echo " *** INSTALL VENDOR *** "
 rm -rf vendor
 composer install
-sudo sed -i 's/database_password: 0/database_password: 0000/' app/config/parameters.yml
 php bin/console cache:clear
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
