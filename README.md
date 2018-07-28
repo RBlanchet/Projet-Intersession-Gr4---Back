@@ -9,7 +9,7 @@
     AllowOverride All
     Order Allow,Deny
     Allow from All
- </Directory>»
+ </Directory>
 ```             
 
 ## Finalisation 
