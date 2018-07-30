@@ -64,14 +64,14 @@ class AppFixtures extends Fixture
                 "lastname"  => "LD",
                 "email"     => "ld@amagantt.com",
                 "password"  => "12345",
-                "job"       => $job_2
+                "job"       => $job_3
             ),
             3 => array(
                 "firstname" => "CP",
                 "lastname"  => "CP",
                 "email"     => "cp@amagantt.com",
                 "password"  => "12345",
-                "job"       => $job_3
+                "job"       => $job_2
             ),
             4 => array(
                 "firstname" => "Dev",
