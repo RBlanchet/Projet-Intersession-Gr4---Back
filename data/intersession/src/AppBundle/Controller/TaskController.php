@@ -87,8 +87,10 @@ class TaskController extends BaseController
             }
             $em->persist($task);
             $em->flush();
+
             $project = $task->getProject();
             $this->updateProject($project);
+
             return $task;
         } else {
             return $form;
@@ -229,6 +231,7 @@ class TaskController extends BaseController
 
                 }
             }
+
             $users = $task->getUsers();
 
             if ($users) {
