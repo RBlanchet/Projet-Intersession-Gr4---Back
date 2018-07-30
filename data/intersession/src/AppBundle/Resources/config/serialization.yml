@@ -3,7 +3,6 @@ AppBundle\Entity\User:
     attributes:
         id:
             groups: ['user', 'auth-token', 'job','task','role']
-
         firstname:
             groups: ['user', 'auth-token', 'job','task','role']
         lastname:
@@ -125,6 +124,8 @@ AppBundle\Entity\Sprint:
             groups: ['sprint']
 AppBundle\Entity\Role:
     attributes:
+        id:
+            groups: ['role']
         cost:
             groups: ['role','user']
         user:
