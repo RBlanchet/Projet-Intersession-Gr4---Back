@@ -19,8 +19,8 @@ class TaskType extends AbstractType
         $builder->add('sprint');
         $builder->add('time_spend');
         $builder->add('status');
-        $builder->add('startAt',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd HH:mm'));
-        $builder->add('endAt',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd HH:mm'));
+        $builder->add('start_at',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
+        $builder->add('end_at',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
         $builder->add('users', CollectionType::class,[
             'entry_type'        => UserType::class,
             'allow_add'         => true,

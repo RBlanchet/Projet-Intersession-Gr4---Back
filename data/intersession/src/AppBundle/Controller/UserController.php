@@ -47,6 +47,7 @@ class UserController extends BaseController
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($user);
             $em->flush();
+            $this->sendMail($user);
             return $user;
         } else {
             return $form;
@@ -79,7 +80,7 @@ class UserController extends BaseController
     public function getAllUsersAction(Request $request)
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(
-            'actived' => true
+            'active' => true
         ));
 
         return $users;

@@ -45,7 +45,7 @@ class Task {
     private $endAt;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TaskStatus", mappedBy="task")
+     * @ORM\Column(type="string")
      */
     private $status;
 

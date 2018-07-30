@@ -12,10 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 // Routing
 use AppBundle\Entity\Project;
+use FOS\RestBundle\Request\ParamFetcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
 use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 
 // Request and Response
 use Symfony\Component\HttpFoundation\Request;
@@ -136,7 +138,9 @@ class ProjectController extends BaseController
         $form = $this->createForm(ProjectType::class, $project, $options);
 
         $form->submit($request->request->all(), $clearMissing);
-
+        if (isset($request->request->all()['active'])){
+            $active = $request->request->all()['active'];
+        }
         if (isset($request->request->all()['date_start'])) {
             $startAt = $this->stringToDatetime($request->request->all()['date_start']);
         } else {
@@ -150,15 +154,17 @@ class ProjectController extends BaseController
         }
 
         if ($form->isValid() && $startAt && $endAt) {
-            $project->setCreatedAt(new \DateTime('now'));
-            $project->setCreatedBy($this->getUser()->getId());
+            $em = $this->get('doctrine.orm.entity_manager');
+            if ($active == false){
+                $this->exportPDF($project);
+            }
             if (is_object($startAt)) {
                 $project->setDateStart($startAt);
             }
             if (is_object($endAt)) {
                 $project->setDateEnd($endAt);
             }
-            $em = $this->get('doctrine.orm.entity_manager');
+
             $em->merge($project);
             $em->flush();
 
@@ -170,32 +176,6 @@ class ProjectController extends BaseController
         }
     }
 
-    /**
-     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
-     * @Rest\Get("/project/{id}/{idUser}")
-     */
-    public function addUserAction(Request $request)
-    {
-        $em = $this->get('doctrine.orm.entity_manager');
-        $project = $em->getRepository('AppBundle:Project')
-            ->find($request->get('id'));
-        /* @var $project Project */
-
-
-        $user = $em->getRepository('AppBundle:User')
-            ->find($request->get('idUser'));
-        /* @var $user User */
-
-        if ($project) {
-            $project->addUser($user);
-            $em->merge($project);
-            $em->flush();
-
-            return View::create(["message" => "Le projet à bien été supprimé."]);
-        } else {
-            return $this->projectNotFound();
-        }
-    }
 
     /**
      * @return \FOS\RestBundle\View\View
@@ -231,26 +211,61 @@ class ProjectController extends BaseController
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
      * @Rest\Get("/projects")
+     * @QueryParam(name="offset", requirements="\d+",default="", description="Index de début de la pagination" )
+     * @QueryParam(name="limit", requirements="\d+", default="", description="Index de fin de pagination")
+     * @QueryParam(name="active", requirements="\d+", default="", description="Recupere projets actives ou non")
+     * @QueryParam((name="sort", requirements="(asc|desc)", nullable="true", description="Ordre de tri basé sur le nom")
      */
-    public function getProjectsAction(Request $request)
+    public function getProjectsAction(Request $request, ParamFetcher $paramFetcher)
     {
-        $projects = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:Project')
-            ->findAll();
+        $offset = $paramFetcher->get('offset');
+        $limit = $paramFetcher->get('limit');
+        $active = $paramFetcher->get('active');
+        $sort = $paramFetcher->get('sort');
+
+        $qb = $this->get('doctrine.orm.entity_manager')
+            ->createQueryBuilder();
+            $qb->select('p')
+            ->from('AppBundle:Project', 'p');
+        if ($offset != "") {
+            $qb->setFirstResult($offset);
+        }
+        if ($active != ""){
+            $qb->setActive($active);
+        }
+        if (in_array($sort, ['asc', 'desc'])) {
+            $qb->orderBy('p.name', $sort);
+        }
+
+        if ($limit != "") {
+            $qb->setMaxResults($limit);
+        }
+
+        $projects = $qb->getQuery()->getResult();
 
         return $projects;
 
     }
+    public function exportPDF(Project $project){
+        $snappy = $this->get('knp_snappy.pdf');
+        $html = $this->renderView('facturation.html.twig', array(
+            'budget'    => $project->getPrice(),
+            'cost'      => $project->getCost(),
+            'name'      => $project->getName(),
+            'start'     => $project->getDateStart(),
+            'end'       => $project->getDateEnd(),
+            'duration'  => $project->getHourSpend(),
+        ));
 
-    /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
-     * @Rest\Get("/projects/users/{idUser}")
-     */
-    public function projectGetAllForUserAction($idUser)
-    {
-        $projects = $this->getDoctrine()
-            ->getRepository(Project::class);
-        return $projects->findAllProjectByIdUser($idUser);
+        $filename = "exportProject" . $project->getName();
 
+        return new Response(
+            $snappy->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          =>'application/pdf',
+                'Content-Disposition'   => 'inline; filename="' . $filename.'.pdf"'
+            )
+        );
     }
 }
