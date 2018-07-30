@@ -91,7 +91,7 @@ abstract class BaseController extends Controller
                 $days -= $weekEnds;
             }
         }
-        return $days ;
+        return ($days * 7) * $users;
     }
 
     public function checkDateValidate($dateStart, $dateEnd) {
