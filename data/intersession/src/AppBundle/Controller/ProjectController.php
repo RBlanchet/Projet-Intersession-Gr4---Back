@@ -211,40 +211,39 @@ class ProjectController extends BaseController
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
      * @Rest\Get("/projects")
-     * @QueryParam(name="offset", requirements="\d+",default="", description="Index de début de la pagination" )
-     * @QueryParam(name="limit", requirements="\d+", default="", description="Index de fin de pagination")
-     * @QueryParam(name="active", requirements="\d+", default="", description="Recupere projets actives ou non")
-     * @QueryParam((name="sort", requirements="(asc|desc)", nullable="true", description="Ordre de tri basé sur le nom")
-     */
+ */
     public function getProjectsAction(Request $request, ParamFetcher $paramFetcher)
     {
-        $offset = $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
-        $active = $paramFetcher->get('active');
-        $sort = $paramFetcher->get('sort');
-
-        $qb = $this->get('doctrine.orm.entity_manager')
-            ->createQueryBuilder();
-            $qb->select('p')
-            ->from('AppBundle:Project', 'p');
-        if ($offset != "") {
-            $qb->setFirstResult($offset);
-        }
-        if ($active != ""){
-            $qb->setActive($active);
-        }
-        if (in_array($sort, ['asc', 'desc'])) {
-            $qb->orderBy('p.name', $sort);
-        }
-
-        if ($limit != "") {
-            $qb->setMaxResults($limit);
-        }
-
-        $projects = $qb->getQuery()->getResult();
-
-        return $projects;
-
+//        $offset = $paramFetcher->get('offset');
+//        $limit = $paramFetcher->get('limit');
+//        $active = $paramFetcher->get('active');
+//        $sort = $paramFetcher->get('sort');
+//
+//        $qb = $this->get('doctrine.orm.entity_manager')
+//            ->createQueryBuilder();
+//            $qb->select('p')
+//            ->from('AppBundle:Project', 'p');
+//        if ($offset != "") {
+//            $qb->setFirstResult($offset);
+//        }
+//        if ($active != ""){
+//            $qb->setActive($active);
+//        }
+//        if (in_array($sort, ['asc', 'desc'])) {
+//            $qb->orderBy('p.name', $sort);
+//        }
+//
+//        if ($limit != "") {
+//            $qb->setMaxResults($limit);
+//        }
+//
+//        $projects = $qb->getQuery()->getResult();
+//
+//        return $projects;
+        $projects = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->findAll();
+return $projects;
     }
     public function exportPDF(Project $project){
         $snappy = $this->get('knp_snappy.pdf');

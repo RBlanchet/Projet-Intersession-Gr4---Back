@@ -144,7 +144,6 @@ class AppFixtures extends Fixture
         $projectsArray = array();
         for ($i = 1; $i <= 5; $i++) {
             $project = new Project();
-            $project->setAdmin($userProject);
             $project->setName('Project' .  $i);
             $project->setDescription('Une description du projet numero ' . $i);
             $project->setPrice(rand(10000, 20000));
@@ -340,6 +339,7 @@ class AppFixtures extends Fixture
             $task->setCreatedBy($userArray[rand(0, count($userArray) - 1)]->getId());
             $task->setTimeSpend(rand(20, 200));
             $task->setActive(true);
+            $task->setStatus(rand(1,4));
 
             $manager->persist($task);
 
