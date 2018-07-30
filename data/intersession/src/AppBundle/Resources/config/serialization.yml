@@ -132,4 +132,6 @@ AppBundle\Entity\Role:
             groups: ['role', 'project']
         project:
             groups: ['role', 'user']
+        job:
+            groups: ['role']
 
