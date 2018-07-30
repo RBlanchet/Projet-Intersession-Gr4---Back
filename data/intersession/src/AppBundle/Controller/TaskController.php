@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Task;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\TaskType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -203,10 +204,10 @@ class TaskController extends BaseController {
         $form = $this->createForm(TaskType::class, $task);
         $form->submit($request->request->all(), false);
         if (array_key_exists('start_at', $request->request->all())) {
-            $startAt = $this->stringToDatetime($request->request->all()['start_at']);
+            $startAt = $request->request->all()['start_at'];
         }
         if (array_key_exists('end_at', $request->request->all())) {
-            $endAt = $this->stringToDatetime($request->request->all()['end_at']);
+            $endAt = $request->request->all()['end_at'];
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -240,16 +241,30 @@ if($users)
                 $count = 1;
             }
             if ($startAt) {
-                $task->setStartAt($startAt);
+                $task->setStartAt($this->stringToDatetime($startAt));
             }
             if ($endAt) {
-                $task->setEndAt($endAt);
+                $task->setEndAt($this->stringToDatetime($endAt));
             }
 
             if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
                 $hours = $this->timeSpend($startAt, $endAt, $count);
 
                 $task->setTimeSpend($hours);
+            }
+            if($cost == "" && $users){
+                $hours = $task->getTimeSpend() / $count;
+                $price = 0;
+                foreach ($users as $user){
+                    $role = $this->get('doctrine.orm.entity_manager')
+                        ->getRepository('AppBundle:Role')
+                        ->findOneBy(array('user' => $user, 'project' => $task->getProject()));
+                    /* @var $role Role */
+                    if (!empty($role)){
+                        $price += $role->getCost() * $hours;
+                    }
+                }
+                $task->setCost($price);
             }
 //            $status = $task->getStatus();
 //            $status->setTask($task);
