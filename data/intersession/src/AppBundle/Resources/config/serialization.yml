@@ -2,17 +2,17 @@
 AppBundle\Entity\User:
     attributes:
         id:
-            groups: ['user', 'auth-token', 'job','task','role']
+            groups: ['user', 'auth-token', 'job','task','role', 'roleByUser','roleByProject']
         firstname:
             groups: ['user', 'auth-token', 'job','task','role']
         lastname:
             groups: ['user', 'auth-token', 'job','task','role']
         email:
-            groups: ['user', 'auth-token', 'job']
+            groups: ['user', 'auth-token', 'job','role']
         roles:
-            groups: ['user', 'auth-token','role']
+            groups: ['user', 'auth-token','role', 'roleByUser']
         job:
-            groups: ['user', 'auth-token','role']
+            groups: ['user', 'auth-token','role','roleByProject']
 
 AppBundle\Entity\AuthToken:
     attributes:
@@ -80,17 +80,17 @@ AppBundle\Entity\TaskStatus:
 AppBundle\Entity\Job:
     attributes:
         id:
-            groups: ['user','job','auth-token','role']
+            groups: ['user','job','auth-token','role','roleByUser','roleByProject']
         name:
-            groups: ['user','job','auth-token','role']
+            groups: ['user','job','auth-token','role','roleByUser','roleByProject']
 
 
 AppBundle\Entity\Project:
     attributes:
         id:
-            groups: ['project','projects','auth-token','task','role']
+            groups: ['project','projects','auth-token','task','role', 'roleByUser']
         name:
-            groups: ['project','projects','auth-token','task','role']
+            groups: ['project','projects','auth-token','task','role', 'roleByUser']
         description:
             groups: ['project','auth-token', 'projects']
         price:
@@ -106,7 +106,7 @@ AppBundle\Entity\Project:
         hour_spend:
             groups: ['project','auth-token']
         active:
-            groups: ['project','auth-token','role']
+            groups: ['project','auth-token','role', 'roleByUser']
         tasks:
             groups: ['project']
 
@@ -127,11 +127,11 @@ AppBundle\Entity\Role:
         id:
             groups: ['role']
         cost:
-            groups: ['role','user']
+            groups: ['role','user', 'roleByUser','roleByProject']
         user:
-            groups: ['role', 'project']
-        project:
-            groups: ['role', 'user']
+            groups: ['role', 'project','roleByProject']
         job:
-            groups: ['role']
+            groups: ['roleByUser','roleByProject']
+        project:
+            groups: ['role', 'user', 'roleByUser']
 
