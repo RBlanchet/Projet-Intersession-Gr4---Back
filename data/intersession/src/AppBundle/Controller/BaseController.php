@@ -83,31 +83,15 @@ abstract class BaseController extends Controller
      */
     public function timeSpend($dateStart, $dateEnd, $users){
         $delta = date_diff($dateEnd,  $dateStart);
-        dump($delta);
-        $hours = $delta->format("%h");
         $days = $delta->format("%a");
-        dump($days);
-        if ($hours){
-            if (($days) >= 7){
-                $weeks = floor($days/7);
-                $weekEnds = 2*$weeks;
-                $days = $days - $weekEnds;
-            }
-            $hours = $days * 7 ;
-        }
-        else if ($days){
+        if ($days){
             if ($days >= 7){
                 $weeks = floor($days/7);
                 $weekEnds = 2*$weeks;
-                $days = $days - $weekEnds;
+                $days -= $weekEnds;
             }
-            else{
-               $days = floor($delta/24);
-            }
-            $hoursLeft = $delta % 24;
-            $hours = ($days * 7) + $hoursLeft;
         }
-        return $hours * $users;
+        return $days ;
     }
 
     public function checkDateValidate($dateStart, $dateEnd) {
@@ -133,6 +117,25 @@ abstract class BaseController extends Controller
     public function errorMessage($message)
     {
         return \FOS\RestBundle\View\View::create(['message' => $message], Response::HTTP_BAD_REQUEST);
+    }
+
+    public function sendMail($user){
+        $mailer = $this->get('mailer');
+        $message = (new \Swift_Message('Un mail'))
+            ->setFrom('delaporte.maxime@orange.fr')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->renderView(
+                    'registration.html.twig',
+                    array(
+                        'name' => $user->getFirstname(),
+                        'email' =>$user->getEmail(),
+                        'password' => $user->getplainPassword())
+                ),
+                'text/html'
+            );
+        $mailer->send($message);
+        return \FOS\RestBundle\View\View::create(['message' => 'Email send'], Response::HTTP_OK);
     }
 }
 

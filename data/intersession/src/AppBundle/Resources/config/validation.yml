@@ -49,12 +49,10 @@ AppBundle\Entity\Task:
         users:
             - Valid: ~
             - AppBundle\Form\Validator\Constraint\UserEmailUnique: ~
-AppBundle\Entity\TaskStatus:
-    properties:
-        title:
+        status:
             - NotNull: ~
             - Choice:
-                choices: [to_do, in_progress, finished, validated]
+                choices: ["to_do", "in_progress", "finished", "validated"]
 AppBundle\Entity\Job:
     properties:
         name:

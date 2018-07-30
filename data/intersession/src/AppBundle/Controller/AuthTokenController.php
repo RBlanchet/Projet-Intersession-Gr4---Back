@@ -41,7 +41,7 @@ class AuthTokenController extends Controller
 
         if (!$user) { // L'utilisateur n'existe pas
             return $this->invalidCredentials();
-        } elseif ($user->getActived() == false) {
+        } elseif ($user->getActive() == false) {
             return $this->isDesactivated();
         }
 

@@ -69,7 +69,7 @@ AppBundle\Entity\Task:
         cost:
             groups: ['project', 'task']
         timeSpend:
-            groups: ['project','task']
+            groups: ['project','task','test']
 
 AppBundle\Entity\TaskStatus:
     attributes:

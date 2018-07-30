@@ -87,7 +87,7 @@ fos_rest:
         view_response_listener: true
     format_listener:
         rules:
-            - { path: '^/', priorities: ['json'], fallback_format: 'json' }
+            - { path: '^/', priorities: ['json'], fallback_format: 'json', prefer_extension: false }
     exception:
         enabled: true
         messages:
@@ -95,3 +95,7 @@ fos_rest:
             'Symfony\Component\Security\Core\Exception\BadCredentialsException': true
         codes:
             'Symfony\Component\Security\Core\Exception\BadCredentialsException': 401
+    body_listener:
+        enabled: true
+    param_fetcher_listener:
+        enabled: true

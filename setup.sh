@@ -47,8 +47,8 @@ sudo apt-get install openssl -y
 echo " *** INSTALL PHP MYSQL *** "
 sudo apt-get install php7.2-mysql -y
 sudo apt-get install debconf-utils -y > /dev/null
-debconf-set-selections <<< "mysql-server mysql-server/root_password password 0000"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password 0000"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password root"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password root"
 sudo apt-get install mysql-server mysql-client mysql-common -y > /dev/null
 echo "UPDATE"
 sudo apt-get update
@@ -81,13 +81,14 @@ composer update
 echo " *** DISPLAY VERSION COMPOSER  *** "
 composer -V
 
-sudo sed -i 's/DocumentRoot \/var\/www\/html/ DocumentRoot \/var\/www\/html\/intersession\/web\n/<Directory \/var\/www\/html>\n/AllowOverride All\n/Order Allow,Deny\n/Allow from All\n/<\/Directory>/g' /etc/apache2/site-available/000-default.conf
+sudo sed -i "s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/intersession\/web\n<Directory \/var\/www\/html>\nAllowOverride All\nOrder Allow,Deny\nAllow from All\n<\/Directory>/" /etc/apache2/sites-available/000-default.conf
 
 cd /var/www/html/intersession
 
 echo " *** INSTALL VENDOR *** "
+rm -rf vendor
 composer install
-sudo sed -i 's/database_password: 0/database_password: 0000/' app/config/parameters.yml
+php bin/console cache:clear
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load
