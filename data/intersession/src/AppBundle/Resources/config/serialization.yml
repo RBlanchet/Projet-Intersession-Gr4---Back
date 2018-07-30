@@ -2,17 +2,17 @@
 AppBundle\Entity\User:
     attributes:
         id:
-            groups: ['user', 'auth-token', 'job','task']
+            groups: ['user', 'auth-token', 'job','task','role']
         firstname:
-            groups: ['user', 'auth-token', 'job','task']
+            groups: ['user', 'auth-token', 'job','task','role']
         lastname:
-            groups: ['user', 'auth-token', 'job','task']
+            groups: ['user', 'auth-token', 'job','task','role']
         email:
             groups: ['user', 'auth-token', 'job']
         roles:
-            groups: ['user', 'auth-token']
+            groups: ['user', 'auth-token','role']
         job:
-            groups: ['user', 'auth-token']
+            groups: ['user', 'auth-token','role']
 
 AppBundle\Entity\AuthToken:
     attributes:
@@ -80,17 +80,17 @@ AppBundle\Entity\TaskStatus:
 AppBundle\Entity\Job:
     attributes:
         id:
-            groups: ['user','job','auth-token']
+            groups: ['user','job','auth-token','role']
         name:
-            groups: ['user','job','auth-token']
+            groups: ['user','job','auth-token','role']
 
 
 AppBundle\Entity\Project:
     attributes:
         id:
-            groups: ['project','projects','auth-token','task']
+            groups: ['project','projects','auth-token','task','role']
         name:
-            groups: ['project','projects','auth-token','task']
+            groups: ['project','projects','auth-token','task','role']
         description:
             groups: ['project','auth-token', 'projects']
         price:
@@ -106,7 +106,7 @@ AppBundle\Entity\Project:
         hour_spend:
             groups: ['project','auth-token']
         active:
-            groups: ['project','auth-token']
+            groups: ['project','auth-token','role']
         tasks:
             groups: ['project']
 

@@ -199,13 +199,14 @@ class TaskController extends BaseController {
         $endAt="";
         $cost="";
         $users ="";
+        $timeSpend = "";
         $form = $this->createForm(TaskType::class, $task);
         $form->submit($request->request->all(), false);
-        if (array_key_exists('startAt', $request->request->all())) {
-            $startAt = $this->stringToDatetime($request->request->all()['startAt']);
+        if (array_key_exists('start_at', $request->request->all())) {
+            $startAt = $this->stringToDatetime($request->request->all()['start_at']);
         }
-        if (array_key_exists('endAt', $request->request->all())) {
-            $endAt = $this->stringToDatetime($request->request->all()['endAt']);
+        if (array_key_exists('end_at', $request->request->all())) {
+            $endAt = $this->stringToDatetime($request->request->all()['end_at']);
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -218,7 +219,8 @@ class TaskController extends BaseController {
         }
         if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
-if($users){
+if($users)
+{
     foreach ($users as $user) {
         $newUser = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:User')
@@ -229,14 +231,14 @@ if($users){
 
     }
 }
-
+//return ("start :" .$startAt . " end :" .$endAt ." time spend:". $timeSpend);
             $users = $task->getUsers();
+
             if ($users) {
                 $count = count($users);
             } else {
                 $count = 1;
             }
-
             if ($startAt) {
                 $task->setStartAt($startAt);
             }
@@ -244,9 +246,10 @@ if($users){
                 $task->setEndAt($endAt);
             }
 
-            if ($startAt && $endAt && !$timeSpend) {
-                return true;
-                $task->setTimeSpend($this->timeSpend($startAt, $endAt, $count));
+            if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
+                $hours = $this->timeSpend($startAt, $endAt, $count);
+
+                $task->setTimeSpend($hours);
             }
 //            $status = $task->getStatus();
 //            $status->setTask($task);
