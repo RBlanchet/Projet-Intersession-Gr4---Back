@@ -14,7 +14,7 @@ class RoleController extends Controller
 {
 
     /**
-     * @Rest\View(serializerGroups={"role"})
+     * @Rest\View(serializerGroups={"roleByProject"})
      * @Rest\Get("/projects/{id}/roles")
      */
     public function getRolesAction(Request $request)
@@ -32,22 +32,22 @@ class RoleController extends Controller
     }
 
     /**
-     * @Rest\View(serializerGroups={"role"})
+     * @Rest\View(serializerGroups={"roleByUser"})
      * @Rest\Get("/users/{id}/roles")
      */
     public function getRolesPerUserAction(Request $request)
     {
         $user = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:User')
-            ->find($request->get('id'));
+            ->getRepository('AppBundle:Role')
+            ->findBy(array('user'=>$request->get('id')));
 
         if (empty($user)) {
             return $this->userNotFound();
         }
-        return $user->getRoles();
+        return $user;
     }
     /**
-     * @Rest\View(serializerGroups={"role"})
+     * @Rest\View(serializerGroups={"roleByProject"})
      * @Rest\Get("/projects/{projectId}/users/{userId}/roles")
      */
     public function getRolesPerUserAndProjectAction(Request $request)
