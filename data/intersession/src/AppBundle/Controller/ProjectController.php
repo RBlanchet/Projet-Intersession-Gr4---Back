@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use AppBundle\Controller\BaseController;
 
 //Repository
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Repository\ProjectRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,7 +44,7 @@ class ProjectController extends BaseController
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project, ['validation_groups'=>['Default', 'New']]);
 
-
+        $role = new Role();
 
         $form->submit($request->request->all());
 
@@ -54,11 +55,13 @@ class ProjectController extends BaseController
 
         if ($form->isValid() && !is_array($validate)) {
             $em = $this->get('doctrine.orm.entity_manager');
+            // Project
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
             $project->setDateStart($dateStart);
             $project->setDateEnd($dateEnd);
             $project->setActive(true);
+            $project->addUser($this->getUser());
             if (isset($request->request->all()['hour_pool'])) {
                 $project->setHourPool($request->request->all()['hour_pool']);
             } else {
@@ -66,7 +69,19 @@ class ProjectController extends BaseController
             }
             $project->setHourSpend(0);
             $em->persist($project);
+
+            // Job
+            $job = $em->getRepository('AppBundle:Job')->find(1);
+
+            // Role
+            $role->setProject($project);
+            $role->setUser($this->getUser());
+            $role->setJob($job);
+            $role->setCost(500);
+
+            $em->persist($role);
             $em->flush();
+
             return $project;
         } elseif (is_array($validate)) {
             return View::create($validate, 401);
