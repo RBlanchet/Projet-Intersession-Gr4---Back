@@ -48,8 +48,8 @@ class ProjectController extends BaseController
 
         $form->submit($request->request->all());
 
-        $dateStart = $this->stringToDatetime($request->request->all()['date_start']);
-        $dateEnd = $this->stringToDatetime($request->request->all()['date_end']);
+        $dateStart = $request->request->all()['date_start'];
+        $dateEnd = $request->request->all()['date_end'];
 
         $validate = $this->checkDateValidate($dateStart, $dateEnd);
 
@@ -58,28 +58,20 @@ class ProjectController extends BaseController
             // Project
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
-            $project->setDateStart($dateStart);
-            $project->setDateEnd($dateEnd);
+            $project->setDateStart($this->stringToDatetime($dateStart));
+            $project->setDateEnd($this->stringToDatetime( $dateEnd));
             $project->setActive(true);
             $project->addUser($this->getUser());
             if (isset($request->request->all()['hour_pool'])) {
                 $project->setHourPool($request->request->all()['hour_pool']);
             } else {
-                $project->setHourPool(0);
+                $project->setHourPool($this->timeSpend($dateStart, $dateEnd, 1));
             }
             $project->setHourSpend(0);
             $em->persist($project);
 
             // Job
             $job = $em->getRepository('AppBundle:Job')->find(1);
-
-            // Role
-            $role->setProject($project);
-            $role->setUser($this->getUser());
-            $role->setJob($job);
-            $role->setCost(500);
-
-            $em->persist($role);
             $em->flush();
 
             return $project;
@@ -156,28 +148,68 @@ class ProjectController extends BaseController
         if (isset($request->request->all()['active'])){
             $active = $request->request->all()['active'];
         }
-        if (isset($request->request->all()['date_start'])) {
-            $startAt = $this->stringToDatetime($request->request->all()['date_start']);
-        } else {
-            $startAt = true;
+        else{
+            $active = true;
+        }
+        $startAt = "";
+        $endAt = "";
+        $cost = "";
+        $hours = "";
+        $pool = "";
+        if (array_key_exists('date-start', $request->request->all())) {
+            $startAt = $request->request->all()['date_start'];
+        }
+        if (array_key_exists('date_end', $request->request->all())) {
+            $endAt = $request->request->all()['date_end'];
+        }
+        if (array_key_exists( 'cost',$request->request->all())){
+            $cost = $request->request->all()['cost'];
         }
 
-        if (isset($request->request->all()['date_end'])) {
-            $endAt = $this->stringToDatetime($request->request->all()['date_end']);
-        } else {
-            $endAt = true;
+        if (array_key_exists('hour_spend',$request->request->all())){
+            $hours = $request->request->all()['hour_spend'];
         }
 
+        if (array_key_exists('hour_pool',$request->request->all())){
+            $pool = $request->request->all()['hour_pool'];
+        }
         if ($form->isValid() && $startAt && $endAt) {
             $em = $this->get('doctrine.orm.entity_manager');
+            $users = count($project->getUsers());
             if ($active == false){
                 $this->exportPDF($project);
             }
-            if (is_object($startAt)) {
-                $project->setDateStart($startAt);
+            if ($startAt !="") {
+                $project->setDateStart($this->stringToDatetime($startAt));
             }
-            if (is_object($endAt)) {
-                $project->setDateEnd($endAt);
+            if ($endAt !="") {
+                $project->setDateEnd($this->stringToDatetime($endAt));
+            }
+            if ($pool == "" && ($startAt !="" || $endAt !="")){
+                $project->setHourPool($this->timeSpend($project->getDateStart()->format('yyyy-MM-dd'), $project->getDateEnd()->format('yyyy-MM-dd'), $users));
+            }
+            if ($hours != ""){
+                $project->setHourSpend($hours);
+            }
+            if ($cost !=""){
+                $project->setCost($cost);
+            }
+            else if($hours == ""){
+                $hours = 0;
+                $double = false;
+                if($cost !=""){
+                    $cost = 0;
+                    $double = true;
+                }
+                foreach($project->getTasks() as $task)
+                {
+                    $hours += $task->getTimeSpend();
+                    if($double){
+                        $cost += $task->getCost();
+                    }
+                }
+                $project->setHourSpend($hours);
+                $project->setCost($cost);
             }
 
             $em->merge($project);
