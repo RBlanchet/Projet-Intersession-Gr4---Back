@@ -19,14 +19,16 @@ class RoleController extends Controller
      */
     public function getRolesAction(Request $request)
     {
+
         $project = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:Project')
-            ->find($request->get('id'));
+            ->getRepository('AppBundle:Role')
+            ->findBy(array('project'=>$request->get('id')));
         /* @var $roles Role[] */
+
         if (empty($project)) {
             return $this->projectNotFound();
         }
-        return $project->getRoles();
+        return $project;
     }
 
     /**
