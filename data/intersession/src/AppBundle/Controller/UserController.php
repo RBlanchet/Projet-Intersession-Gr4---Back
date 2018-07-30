@@ -40,7 +40,7 @@ class UserController extends BaseController
         if ($form->isValid()) {
             $encoder = $this->get('security.password_encoder');
             // le mot de passe en claire est encodé avant la sauvegarde
-            $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+            $encoded = $encoder->encodePassword($user, $this->randomPassword());
             $user->setPassword($encoded);
             $user->setActive(true);
 
@@ -52,6 +52,17 @@ class UserController extends BaseController
         } else {
             return $form;
         }
+    }
+
+    public function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+-_$*';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i <= 9; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 
     /**
