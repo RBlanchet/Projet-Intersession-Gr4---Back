@@ -125,7 +125,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @Rest\View()
+     * @Rest\View(serializerGroups={"project"})
      * @Rest\Get("/users/{id}/projects")
      */
     public function getProjectsByUserAction(Request $request){

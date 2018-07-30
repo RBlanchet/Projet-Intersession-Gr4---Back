@@ -393,30 +393,6 @@ class Project
     }
 
     /**
-     * Set admin.
-     *
-     * @param \AppBundle\Entity\User|null $admin
-     *
-     * @return Project
-     */
-    public function setAdmin(\AppBundle\Entity\User $admin = null)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin.
-     *
-     * @return \AppBundle\Entity\User|null
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
-    }
-
-    /**
      * Add task.
      *
      * @param \AppBundle\Entity\Task $task
