@@ -44,10 +44,6 @@ class Task {
      */
     private $endAt;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $status;
 
     /**
      * @ORM\Column(type="datetime")
@@ -93,6 +89,12 @@ class Task {
      * @ORM\Column(type="integer", nullable=true)
      */
     private $parent;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TaskStatus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
 
     public function __construct()
     {

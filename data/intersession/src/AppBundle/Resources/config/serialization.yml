@@ -75,7 +75,7 @@ AppBundle\Entity\TaskStatus:
         id:
             groups: ['task']
         title:
-            groups: ['task']
+            groups: ['task', 'taskStatus']
 
 AppBundle\Entity\Job:
     attributes:
