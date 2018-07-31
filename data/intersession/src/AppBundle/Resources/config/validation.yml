@@ -65,12 +65,3 @@ AppBundle\Entity\Sprint:
             - NotBlank: ~
             - Type: string
 
-AppBundle\Entity\Role:
-    properties:
-        cost:
-            - NotBlank: ~
-            - Type: int
-        user:
-            - NotBlank: ~
-        project:
-            - NotBlank: ~

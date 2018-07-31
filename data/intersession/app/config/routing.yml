@@ -4,9 +4,6 @@ app:
 tasks:
     type:   rest
     resource: AppBundle\Controller\TaskController
-tasks_status:
-    type: rest
-    resource: AppBundle\Controller\TaskStatusController
 jobs:
     type: rest
     resource: AppBundle\Controller\JobController

@@ -15,6 +15,7 @@ class RoleType extends AbstractType
         $builder->add('cost');
         $builder->add('user');
         $builder->add('project');
+        $builder->add('job');
     }
     public function configureOptions(OptionsResolver $resolver)
     {
