@@ -13,7 +13,6 @@ AppBundle\Entity\User:
             - NotBlank: { groups: [New] }
             - Email: ~
         plainPassword:
-            - NotBlank: { groups: [New] }
             - Type: string
             - Length:
                 min: 4

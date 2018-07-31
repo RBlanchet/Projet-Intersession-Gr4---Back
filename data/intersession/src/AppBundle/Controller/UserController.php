@@ -40,7 +40,9 @@ class UserController extends BaseController
         if ($form->isValid()) {
             $encoder = $this->get('security.password_encoder');
             // le mot de passe en claire est encodé avant la sauvegarde
-            $encoded = $encoder->encodePassword($user, $this->randomPassword());
+            $pwd=$this->randomPassword();
+            $user->setPlainPassword($pwd);
+            $encoded = $encoder->encodePassword($user, $pwd );
             $user->setPassword($encoded);
             $user->setActive(true);
 
@@ -48,6 +50,9 @@ class UserController extends BaseController
             $em->persist($user);
             $em->flush();
             $this->sendMail($user);
+            $user->setPlainPassword("");
+            $em->persist($user);
+            $em->flush();
             return $user;
         } else {
             return $form;
