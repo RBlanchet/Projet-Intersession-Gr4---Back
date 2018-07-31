@@ -163,8 +163,8 @@ abstract class BaseController extends Controller
 
     public function sendMail($user){
         $mailer = $this->get('mailer');
-        $message = (new \Swift_Message('Un mail'))
-            ->setFrom('delaporte.maxime@orange.fr')
+        $message = (new \Swift_Message('Mail d\'Inscription'))
+            ->setFrom('amagantt@gmail.com')
             ->setTo($user->getEmail())
             ->setBody(
                 $this->renderView(

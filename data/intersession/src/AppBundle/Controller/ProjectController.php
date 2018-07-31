@@ -29,6 +29,8 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use AppBundle\Form\Type\ProjectType;
 
+use Knp\Snappy\Pdf;
+
 /**
  * Class ProjectController
  * @package AppBundle\Controller
@@ -209,7 +211,6 @@ class ProjectController extends BaseController
         $projects = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
-
         if ($projects) {
             if ($this->isActived($projects)) {
                 return $projects;
@@ -219,9 +220,22 @@ class ProjectController extends BaseController
         } else {
             return $this->projectNotFound();
         }
-
         return $projects;
     }
+
+    /**
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
+     * @Rest\Get("/projects/pdf/{id}")
+     */
+    public function getPdfProjectAction(Request $request)
+    {
+        $projects = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->find($request->get('id'));
+        dump( $this->exportPDF($projects));
+        die;
+    }
+
 
     /**
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"projects"})
@@ -258,8 +272,9 @@ class ProjectController extends BaseController
         $projects = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->findAll();
-return $projects;
+        return $projects;
     }
+
     public function exportPDF(Project $project){
         $snappy = $this->get('knp_snappy.pdf');
         $html = $this->renderView('facturation.html.twig', array(
