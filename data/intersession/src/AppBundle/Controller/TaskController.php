@@ -205,9 +205,11 @@ class TaskController extends BaseController
         $form->submit($request->request->all(), false);
         if (array_key_exists('start_at', $request->request->all())) {
             $startAt = $request->request->all()['start_at'];
+            dump($startAt);
         }
         if (array_key_exists('end_at', $request->request->all())) {
             $endAt = $request->request->all()['end_at'];
+            dump($endAt);
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -245,12 +247,12 @@ class TaskController extends BaseController
             if ($endAt) {
                 $task->setEndAt($this->stringToDatetime($endAt));
             }
-
-            if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
-                $hours = $this->timeSpend($startAt, $endAt, $count);
-
-                $task->setTimeSpend($hours);
-            }
+//
+//            if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
+//                $hours = $this->timeSpend($startAt, $endAt, $count);
+//
+//                $task->setTimeSpend($hours);
+//            }
             if ($cost == "" && $users) {
                 $hours = $task->getTimeSpend() / $count;
                 $price = 0;

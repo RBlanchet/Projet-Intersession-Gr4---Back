@@ -117,16 +117,6 @@ class ProjectController extends BaseController
 
     public function patchProjectAction(Request $request)
     {
-        return $this->updateProject($request, false);
-    }
-
-    /**
-     * @param Request $request
-     * @param $clearMissing
-     * @return Project|\FOS\RestBundle\View\View|\Symfony\Component\Form\FormInterface
-     */
-    private function updateProject(Request $request, $clearMissing)
-    {
         $project = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
@@ -136,15 +126,9 @@ class ProjectController extends BaseController
             return $this->projectNotFound();
         }
 
-        if ($clearMissing) {
-            $options = ['validation_groups'=>['Default', 'FullUpdate']];
-        } else {
-            $options = [];
-        }
+        $form = $this->createForm(ProjectType::class, $project);
 
-        $form = $this->createForm(ProjectType::class, $project, $options);
-
-        $form->submit($request->request->all(), $clearMissing);
+        $form->submit($request->request->all(), false);
         if (isset($request->request->all()['active'])){
             $active = $request->request->all()['active'];
         }
@@ -165,15 +149,13 @@ class ProjectController extends BaseController
         if (array_key_exists( 'cost',$request->request->all())){
             $cost = $request->request->all()['cost'];
         }
-
         if (array_key_exists('hour_spend',$request->request->all())){
             $hours = $request->request->all()['hour_spend'];
         }
-
         if (array_key_exists('hour_pool',$request->request->all())){
             $pool = $request->request->all()['hour_pool'];
         }
-        if ($form->isValid() && $startAt && $endAt) {
+        if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
             $users = count($project->getUsers());
             if ($active == false){
@@ -186,7 +168,7 @@ class ProjectController extends BaseController
                 $project->setDateEnd($this->stringToDatetime($endAt));
             }
             if ($pool == "" && ($startAt !="" || $endAt !="")){
-                $project->setHourPool($this->timeSpend($project->getDateStart()->format('yyyy-MM-dd'), $project->getDateEnd()->format('yyyy-MM-dd'), $users));
+                $project->setHourPool($this->timeSpend($project->getDateStart(), $project->getDateEnd(), $users));
             }
             if ($hours != ""){
                 $project->setHourSpend($hours);
@@ -209,16 +191,17 @@ class ProjectController extends BaseController
                     }
                 }
                 $project->setHourSpend($hours);
-                $project->setCost($cost);
+                if ($cost != 0){
+                    $project->setCost($cost);
+                }
             }
 
             $em->merge($project);
             $em->flush();
 
             return $project;
-        } elseif (!$startAt || !$endAt) {
-            return View::create(["message" => "Le format des dates n'est pas compatible."], 500);
-        } else {
+        }
+        else {
             return $form;
         }
     }

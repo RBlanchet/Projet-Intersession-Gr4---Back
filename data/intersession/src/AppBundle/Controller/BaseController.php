@@ -82,8 +82,8 @@ abstract class BaseController extends Controller
      * @return float|int
      */
     public function timeSpend($dateStart, $dateEnd, $users){
-//        $delta = date_diff($dateEnd,  $dateStart);
-//        $days = $delta->format("%a");
+        $delta = date_diff($dateEnd,  $dateStart);
+        $days = $delta->format("%a");
 //        if ($days){
 //            if ($days >= 7){
 //                $weeks = floor($days/7);
@@ -92,14 +92,13 @@ abstract class BaseController extends Controller
 //            }
 //        }
 //        return ($days * 7) * $users;
-        $dateStart = strtotime($dateStart);
-        $dateEnd = strtotime($dateEnd);
-        $days = ($dateEnd - $dateStart) / 86400 + 1;
+
+        //$days = ($dateEnd - $dateStart) / 86400 + 1;
         $no_full_weeks = floor($days / 7);
         $no_remaining_days = fmod($days, 7);
         //It will return 1 if it's Monday,.. ,7 for Sunday
-        $the_first_day_of_week = date("N", $dateStart);
-        $the_last_day_of_week = date("N", $dateEnd);
+        $the_first_day_of_week =  $dateStart->format("%N");
+        $the_last_day_of_week =  $dateEnd->format("%N");
         //---->The two can be equal in leap years when february has 29 days, the equal sign is added here
         //In the first case the whole interval is within a week, in the second case the interval falls in two weeks.
         if ($the_first_day_of_week <= $the_last_day_of_week) {
