@@ -165,7 +165,7 @@ class RoleController extends Controller
     }
 
     /**
-     * @Rest\View(serializerGroups={"role"}, statusCode=Response::HTTP_CREATED)
+     * @Rest\View(serializerGroups={"role"})
      * @Rest\Patch("roles/{id}")
      */
     public function patchJobsAction(Request $request)
@@ -191,6 +191,8 @@ class RoleController extends Controller
             return $form;
         }
     }
+
+
 
     private function userNotFound()
     {

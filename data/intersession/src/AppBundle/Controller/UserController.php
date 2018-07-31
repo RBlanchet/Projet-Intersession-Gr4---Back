@@ -92,7 +92,7 @@ class UserController extends BaseController
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findBy(array(
             'active' => true
-        ));
+        ), array('lastname' => 'asc'));
 
         return $users;
     }
