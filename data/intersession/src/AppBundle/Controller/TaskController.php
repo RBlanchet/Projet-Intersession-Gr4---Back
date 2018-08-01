@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
 use AppBundle\Entity\Role;
+use AppBundle\Entity\TaskStatus;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Project;
 use AppBundle\Form\Type\TaskType;
@@ -40,12 +41,16 @@ class TaskController extends BaseController
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $users = [];
-        $form->submit($request->request->all());
+
+        $data = $request->request->all();
+
+        $data['start_at'] = $this->stringToDatetime($request->request->all()['start_at']);
+        $data['end_at'] = $this->stringToDatetime($request->request->all()['end_at']);
+
+        $form->submit($data);
+
         if (array_key_exists('startAt', $request->request->all())) {
-            $startAt = new \DateTime($request->request->all()['startAt']);
-        }
-        if (array_key_exists('endAt', $request->request->all())) {
-            $endAt = new \DateTime($request->request->all()['endAt']);
+            $startAt = $this->stringToDatetime($request->request->all()['start_at']);
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -59,18 +64,21 @@ class TaskController extends BaseController
         } else {
             $count = 1;
         }
-        if ($form->isValid() && $startAt && $endAt) {
+        if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
-            $status = $task->getStatus();
-            $status->setTask($task);
+            $status = $this->get('doctrine.orm.entity_manager')
+                ->getRepository(TaskStatus::class)
+                ->find($request->request->all()['status']);
+            //$status = $task->getStatus();
+            //$status->setTask($task);
             $em->persist($task);
+            $task->setStatus($status);
             $task->setProject($project);
             $task->setCreatedAt(new \DateTime('now'));
             $task->setCreatedBy($this->getUser()->getId());
-            $task->setStartAt($startAt);
-            $task->setEndAt($endAt);
-            $task->setActive(1);
-            $task->setTimeSpend($this->timeSpend($startAt, $endAt, $count));
+            $task->setActive(true);
+            $task->setTimeSpend($this->timeSpend($data['start_at'], $data['end_at'], $count));
+
             if (empty($cost)) {
 
             } else {
@@ -80,11 +88,12 @@ class TaskController extends BaseController
             foreach ($users as $user) {
                 $attributed = $this->get('doctrine.orm.entity_manager')
                     ->getRepository('AppBundle:User')
-                    ->find($request->get($user));
+                    ->find($user);
                 /* @var $attributed User */
                 $attributed->addTask($task);
                 $em->persist($attributed);
             }
+
             $em->persist($task);
             $em->flush();
 
@@ -136,6 +145,39 @@ class TaskController extends BaseController
             ->find($request->get("id"));
         if ($user) {
             return $user->getTasks();
+        } else {
+            return \FOS\RestBundle\View\View::create(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * @Rest\View(serializerGroups={"task"})
+     * @Rest\Get("/users/{id}/tasks-status")
+     */
+    public function getTasksStatusByUserAction(Request $request)
+    {
+        $user = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:User')
+            ->find($request->get("id"));
+
+        $tasksStatus = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(TaskStatus::class)
+            ->findAll();
+
+        if ($user) {
+            $data = array(
+                'results' => array('Label', 'Value'),
+            );
+
+            foreach ($tasksStatus as $taskStatus) {
+                $data[$taskStatus->getId()] = array($taskStatus->getTitle(), 0);
+            }
+
+            foreach ($user->getTasks() as $task) {
+                $data[$task->getStatus()->getId()][1] = $data[$task->getStatus()->getId()][1] + 1;
+            }
+
+            return \FOS\RestBundle\View\View::create(['data' => $data], Response::HTTP_OK);
         } else {
             return \FOS\RestBundle\View\View::create(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
         }

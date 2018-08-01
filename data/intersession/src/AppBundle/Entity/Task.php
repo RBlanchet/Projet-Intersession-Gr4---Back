@@ -169,11 +169,10 @@ class Task {
     /**
      * Set status.
      *
-     * @param int $status
      *
      * @return Task
      */
-    public function setStatus($status)
+    public function setStatus(TaskStatus $status)
     {
         $this->status = $status;
 

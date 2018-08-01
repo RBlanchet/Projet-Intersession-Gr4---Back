@@ -329,7 +329,7 @@ class AppFixtures extends Fixture
 
         foreach ($status as $k => $v) {
             $taskStatus = new TaskStatus();
-            $taskStatus->setTitle($status[rand(1, 4)]);
+            $taskStatus->setTitle($v);
 
             $manager->persist($taskStatus);
             $manager->flush();

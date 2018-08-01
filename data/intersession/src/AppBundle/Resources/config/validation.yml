@@ -46,13 +46,8 @@ AppBundle\Entity\Task:
             - Type: string
         parent:
             - Type: int
-        users:
-            - Valid: ~
-            - AppBundle\Form\Validator\Constraint\UserEmailUnique: ~
         status:
             - NotNull: ~
-            - Choice:
-                choices: ["to_do", "in_progress", "finished", "validated"]
 AppBundle\Entity\Job:
     properties:
         name:
