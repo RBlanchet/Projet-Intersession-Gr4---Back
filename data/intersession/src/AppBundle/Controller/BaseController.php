@@ -78,11 +78,16 @@ abstract class BaseController extends Controller
      *
      * @param $dateStart
      * @param $dateEnd
-     * @param $users
      * @return float|int
      */
-    public function timeSpend($dateStart, $dateEnd, $users){
-        $delta = date_diff($dateEnd,  $dateStart);
+    public function timeSpend($dateStart, $dateEnd){
+        if(is_string($dateStart)){
+            $dateStart = new \DateTime($dateStart);
+        }
+        if(is_string($dateEnd)){
+            $dateEnd = new \DateTime($dateEnd);
+        }
+        $delta = $dateStart->diff($dateEnd);
         $days = $delta->format("%a");
 //        if ($days){
 //            if ($days >= 7){
@@ -131,7 +136,7 @@ abstract class BaseController extends Controller
             $workingDays += $no_remaining_days;
         }
 
-        return ($workingDays * 7)* $users;
+        return $workingDays * 7;
     }
 
 

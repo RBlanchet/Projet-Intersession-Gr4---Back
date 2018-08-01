@@ -17,16 +17,6 @@ use AppBundle\Controller\BaseController;
 
 class TaskController extends BaseController
 {
-    /**
-     * @Rest\View(serializerGroups={"test"})
-     * @Rest\Get("/test")
-     */
-    public function getTestAction()
-    {
-        $startAt = $this->stringToDatetime("2018-12-10");
-        $endAt = $this->stringToDatetime("2018-12-19");
-        return $this->timeSpend($startAt, $endAt, 1);
-    }
 
     /**
      * @Rest\View(serializerGroups={"task"}, statusCode=Response::HTTP_CREATED)
@@ -44,13 +34,13 @@ class TaskController extends BaseController
 
         $data = $request->request->all();
 
-        $data['start_at'] = $this->stringToDatetime($request->request->all()['start_at']);
-        $data['end_at'] = $this->stringToDatetime($request->request->all()['end_at']);
-
         $form->submit($data);
 
-        if (array_key_exists('startAt', $request->request->all())) {
+        if (array_key_exists('start_at', $request->request->all())) {
             $startAt = $this->stringToDatetime($request->request->all()['start_at']);
+        }
+        if (array_key_exists('end_at', $request->request->all())) {
+            $endAt = $this->stringToDatetime($request->request->all()['end_at']);
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -77,7 +67,7 @@ class TaskController extends BaseController
             $task->setCreatedAt(new \DateTime('now'));
             $task->setCreatedBy($this->getUser()->getId());
             $task->setActive(true);
-            $task->setTimeSpend($this->timeSpend($data['start_at'], $data['end_at'], $count));
+            $task->setTimeSpend($this->timeSpend($startAt, $endAt));
 
             if (empty($cost)) {
 
@@ -246,12 +236,10 @@ class TaskController extends BaseController
         $form = $this->createForm(TaskType::class, $task);
         $form->submit($request->request->all(), false);
         if (array_key_exists('start_at', $request->request->all())) {
-            $startAt = $request->request->all()['start_at'];
-            dump($startAt);
+            $startAt = $this->stringToDatetime($request->request->all()['start_at']);
         }
         if (array_key_exists('end_at', $request->request->all())) {
-            $endAt = $request->request->all()['end_at'];
-            dump($endAt);
+            $endAt =$this->stringToDatetime($request->request->all()['end_at']);
         }
         if (array_key_exists('cost', $request->request->all())) {
             $cost = $request->request->all()['cost'];
@@ -284,17 +272,17 @@ class TaskController extends BaseController
                 $count = 1;
             }
             if ($startAt) {
-                $task->setStartAt($this->stringToDatetime($startAt));
+                $task->setStartAt($startAt);
             }
             if ($endAt) {
-                $task->setEndAt($this->stringToDatetime($endAt));
+                $task->setEndAt($endAt);
             }
-//
-//            if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
-//                $hours = $this->timeSpend($startAt, $endAt, $count);
-//
-//                $task->setTimeSpend($hours);
-//            }
+
+            if ($timeSpend == "" && ($startAt != "" || $endAt != "")) {
+                $hours = $this->timeSpend($startAt, $endAt);
+
+                $task->setTimeSpend($hours);
+            }
             if ($cost == "" && $users) {
                 $hours = $task->getTimeSpend() / $count;
                 $price = 0;

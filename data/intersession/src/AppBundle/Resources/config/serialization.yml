@@ -4,13 +4,13 @@ AppBundle\Entity\User:
         id:
             groups: ['user', 'auth-token', 'job','task','role', 'roleByUser','roleByProject']
         firstname:
-            groups: ['user', 'auth-token', 'job','task','role','roleByProject']
+            groups: ['user', 'auth-token', 'job','task','role','roleByProject', 'project']
         lastname:
-            groups: ['user', 'auth-token', 'job','task','role','roleByProject']
+            groups: ['user', 'auth-token', 'job','task','role','roleByProject','project']
         email:
-            groups: ['user', 'auth-token', 'job','role']
+            groups: ['user', 'auth-token', 'job','role','project']
         roles:
-            groups: ['user', 'auth-token','role', 'roleByUser']
+            groups: ['user', 'auth-token','role', 'roleByUser','project']
         job:
             groups: ['user', 'auth-token','role','roleByProject']
 
@@ -48,7 +48,7 @@ AppBundle\Entity\Task:
         description:
             groups: ['task','user','project']
         status:
-            groups: ['task','user','project']
+            groups: ['task','user','project', 'taskStatus']
         project:
             groups: ['task','user']
         startAt:
@@ -73,9 +73,11 @@ AppBundle\Entity\Task:
 AppBundle\Entity\TaskStatus:
     attributes:
         id:
-            groups: ['task']
+            groups: ['task','project']
         title:
-            groups: ['task', 'taskStatus']
+            groups: ['task', 'taskStatus','project']
+        percentage:
+            groups: ['task', 'taskStatus','project']
 
 AppBundle\Entity\Job:
     attributes:

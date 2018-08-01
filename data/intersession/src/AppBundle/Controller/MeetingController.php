@@ -41,13 +41,17 @@ class MeetingController extends BaseController
             $startAt = $this->stringToDatetime($request->request->all()['startAt']);
             $endAt = $this->stringToDatetime($request->request->all()['endAt']);
 
-            if ($form->isValid() && $startAt && $endAt) {
+            if ($form->isValid()){
+
+             if($startAt && $endAt) {
+                 $meetings->setDateStart($startAt);
+                 $meetings->setDateEnd($endAt);
+                 $meetings->setTimeSpend($this->timeSpend($startAt, $endAt));
+
+             }
                 $meetings->setCreatedAt(new \DateTime('now'));
                 $meetings->setCreatedBy($this->getUser()->getId());
                 $meetings->setProject($project);
-                $meetings->setDateStart($startAt);
-                $meetings->setDateEnd($endAt);
-                $meetings->setTimeSpend($endAt - $startAt);
 
                 $em = $this->get('doctrine.orm.entity_manager');
                 $em->persist($meetings);
@@ -187,18 +191,18 @@ class MeetingController extends BaseController
         $endAt = $this->stringToDatetime($request->request->all()['endAt']);
 
 
-        if ($form->isValid() && $startAt && $endAt) {
+        if ($form->isValid()){
+            if($startAt && $endAt) {
             $meeting->setDateStart($startAt);
             $meeting->setDateEnd($endAt);
-            $meeting->setTimeSpend(0);
-
-            $em = $this->get('doctrine.orm.entity_manager');
-            $em->merge($meeting);
-            $em->flush();
-            return $meeting;
-        } elseif (!$startAt || !$endAt) {
-            return View::create(["message" => "Le format des dates n'est pas compatible."], 500);
-        } else {
+            $meeting->setTimeSpend($this->timeSpend($startAt, $endAt));
+        }
+        $em = $this->get('doctrine.orm.entity_manager');
+        $em->merge($meeting);
+        $em->flush();
+        return $meeting;
+        }
+        else {
             return $form;
         }
     }

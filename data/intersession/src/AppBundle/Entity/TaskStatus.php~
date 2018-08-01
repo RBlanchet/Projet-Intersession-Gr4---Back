@@ -59,28 +59,4 @@ class TaskStatus {
         return $this->title;
     }
 
-
-    /**
-     * Set percentage
-     *
-     * @param integer $percentage
-     *
-     * @return TaskStatus
-     */
-    public function setPercentage($percentage)
-    {
-        $this->percentage = $percentage;
-
-        return $this;
-    }
-
-    /**
-     * Get percentage
-     *
-     * @return integer
-     */
-    public function getPercentage()
-    {
-        return $this->percentage;
-    }
 }

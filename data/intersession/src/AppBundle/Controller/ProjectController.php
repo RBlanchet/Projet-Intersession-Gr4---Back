@@ -59,13 +59,14 @@ class ProjectController extends BaseController
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
             $project->setDateStart($this->stringToDatetime($dateStart));
-            $project->setDateEnd($this->stringToDatetime( $dateEnd));
+            $project->setDateEnd($this->stringToDatetime($dateEnd));
             $project->setActive(true);
             $project->addUser($this->getUser());
             if (isset($request->request->all()['hour_pool'])) {
                 $project->setHourPool($request->request->all()['hour_pool']);
-            } else {
-                $project->setHourPool($this->timeSpend($dateStart, $dateEnd, 1));
+            }
+              else {
+                $project->setHourPool($this->timeSpend($dateStart, $dateEnd));
             }
             $project->setHourSpend(0);
             $em->persist($project);
@@ -135,16 +136,12 @@ class ProjectController extends BaseController
         else{
             $active = true;
         }
-        $startAt = "";
-        $endAt = "";
-        $cost = "";
-        $hours = "";
-        $pool = "";
+
         if (array_key_exists('date-start', $request->request->all())) {
-            $startAt = $request->request->all()['date_start'];
+            $startAt = $this->stringToDatetime($request->request->all()['date_start']);
         }
         if (array_key_exists('date_end', $request->request->all())) {
-            $endAt = $request->request->all()['date_end'];
+            $endAt =$this->stringToDatetime($request->request->all()['date_end']);
         }
         if (array_key_exists( 'cost',$request->request->all())){
             $cost = $request->request->all()['cost'];
@@ -161,25 +158,22 @@ class ProjectController extends BaseController
             if ($active == false){
                 $this->exportPDF($project);
             }
-            if ($startAt !="") {
-                $project->setDateStart($this->stringToDatetime($startAt));
+            if ($startAt) {
+                $project->setDateStart($startAt);
             }
-            if ($endAt !="") {
-                $project->setDateEnd($this->stringToDatetime($endAt));
+            if ($endAt) {
+                $project->setDateEnd($endAt);
             }
-            if ($pool == "" && ($startAt !="" || $endAt !="")){
-                $project->setHourPool($this->timeSpend($project->getDateStart(), $project->getDateEnd(), $users));
+            if (!$pool && ($startAt || $endAt)){
+                $project->setHourPool($this->timeSpend($this->stringToDatetime($project->getDateStart()),$this->stringToDatetime($project->getDateEnd())));
             }
-            if ($hours != ""){
+            if ($hours){
                 $project->setHourSpend($hours);
             }
-            if ($cost !=""){
-                $project->setCost($cost);
-            }
-            else if($hours == ""){
+            else {
                 $hours = 0;
                 $double = false;
-                if($cost !=""){
+                if(!$cost){
                     $cost = 0;
                     $double = true;
                 }
@@ -195,7 +189,9 @@ class ProjectController extends BaseController
                     $project->setCost($cost);
                 }
             }
-
+            if ($cost !=""){
+                $project->setCost($cost);
+            }
             $em->merge($project);
             $em->flush();
 
@@ -236,6 +232,20 @@ class ProjectController extends BaseController
         }
 
         return $projects;
+    }
+    /**
+     * @Rest\View(serializerGroups={"project"})
+     * @Rest\Get("/projects/{id}/users")
+     */
+    public function getUsersByProjectAction(Request $request){
+        $project = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+        /* @var $project Project */
+        if (empty($project)) {
+            return $this->projectNotFound();
+        }
+        return $project->getUsers();
     }
 
     /**

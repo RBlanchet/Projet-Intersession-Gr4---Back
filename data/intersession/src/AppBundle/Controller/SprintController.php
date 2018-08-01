@@ -41,7 +41,7 @@ class SprintController extends BaseController
                 }
                 $sprint->setDateStart($startAt);
                 $sprint->setDateEnd($endAt);
-                $sprint->setTimeSpend($endAt - $startAt);
+                $sprint->setTimeSpend($startAt, $endAt);
                 $em->persist($sprint);
                 $em->flush();
                 return $sprint;
@@ -121,7 +121,7 @@ class SprintController extends BaseController
             }
             $sprint->setDateStart($startAt);
             $sprint->setDateEnd($endAt);
-            $sprint->setTimeSpend($endAt - $startAt);
+            $sprint->setTimeSpend($startAt, $endAt );
             $em->persist($sprint);
             $em->flush();
             return $sprint;
