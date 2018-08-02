@@ -2,7 +2,7 @@
 AppBundle\Entity\User:
     attributes:
         id:
-            groups: ['user', 'auth-token', 'job','task','role', 'roleByUser','roleByProject']
+            groups: ['user', 'auth-token', 'job','task','role', 'roleByUser','roleByProject', 'project']
         firstname:
             groups: ['user', 'auth-token', 'job','task','role','roleByProject', 'project']
         lastname:
