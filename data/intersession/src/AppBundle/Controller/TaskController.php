@@ -223,6 +223,7 @@ class TaskController extends BaseController
         $task = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Task')
             ->find($request->get('id'));
+
         /* @var $task Task */
 
         if (empty($task)) {
@@ -252,19 +253,27 @@ class TaskController extends BaseController
         }
         if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
-            if ($users) {
+            if (is_array($users)) {
+                // On kick tous les user a la tache
+                foreach ($task->getUsers() as $user) {
+                    $task->removeUser($user);
+                    $user->removeTask($task);
+                    $em->persist($task);
+                    $em->persist($user);
+                }
+                // On est obligé de flush afin que la base soit à jour
+                $em->flush();
+                // On rajoute les new user
                 foreach ($users as $user) {
                     $newUser = $this->get('doctrine.orm.entity_manager')
                         ->getRepository('AppBundle:User')
                         ->find($user);
                     /* @var $newUser User */
-                    $newUser->addTask($task);
-                    $em->persist($newUser);
-
+                    $task->addUser($newUser);
+                    $em->persist($task);
+                    $em->flush();
                 }
             }
-
-            $users = $task->getUsers();
 
             if ($users) {
                 $count = count($users);
@@ -284,7 +293,7 @@ class TaskController extends BaseController
                 $task->setTimeSpend($hours);
             }
             if ($cost == "" && $users) {
-                $hours = $task->getTimeSpend() / $count;
+                $hours = $task->getTimeSpend();
                 $price = 0;
                 foreach ($users as $user) {
                     $role = $this->get('doctrine.orm.entity_manager')
@@ -297,8 +306,6 @@ class TaskController extends BaseController
                 }
                 $task->setCost($price);
             }
-//            $status = $task->getStatus();
-//            $status->setTask($task);
             $em->persist($task);
             $em->flush();
             $project = $task->getProject();

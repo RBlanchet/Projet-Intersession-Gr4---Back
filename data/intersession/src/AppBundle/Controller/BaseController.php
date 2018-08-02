@@ -89,15 +89,6 @@ abstract class BaseController extends Controller
         }
         $delta = $dateStart->diff($dateEnd);
         $days = $delta->format("%a");
-//        if ($days){
-//            if ($days >= 7){
-//                $weeks = floor($days/7);
-//                $weekEnds = 2*$weeks;
-//                $days -= $weekEnds;
-//            }
-//        }
-//        return ($days * 7) * $users;
-
         //$days = ($dateEnd - $dateStart) / 86400 + 1;
         $no_full_weeks = floor($days / 7);
         $no_remaining_days = fmod($days, 7);
@@ -129,7 +120,7 @@ abstract class BaseController extends Controller
             }
         }
         //The no. of business days is: (number of weeks between the two dates) * (5 working days) + the remainder
-//---->february in none leap years gave a remainder of 0 but still calculated weekends between first and last day, this is one way to fix it
+        //---->february in none leap years gave a remainder of 0 but still calculated weekends between first and last day, this is one way to fix it
         $workingDays = $no_full_weeks * 5;
         if ($no_remaining_days > 0 )
         {
