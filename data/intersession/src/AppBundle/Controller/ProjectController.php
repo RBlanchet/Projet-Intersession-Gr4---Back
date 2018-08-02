@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use AppBundle\Form\Type\ProjectType;
 
-use Knp\Snappy\Pdf;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 
 /**
  * Class ProjectController
@@ -227,13 +227,28 @@ class ProjectController extends BaseController
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"project"})
      * @Rest\Get("/projects/pdf/{id}")
      */
-    public function getPdfProjectAction(Request $request)
+    public function getPdfProjectAction(Project $project)
     {
-        $projects = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:Project')
-            ->find($request->get('id'));
-        dump( $this->exportPDF($projects));
-        die;
+        $html = $this->renderView('facturation.html.twig',
+            array(
+                'budget'    => $project->getPrice(),
+                'cost'      => $project->getCost(),
+                'name'      => $project->getName(),
+                'start'     => $project->getDateStart(),
+                'end'       => $project->getDateEnd(),
+                'duration'  => $project->getHourSpend(),
+            ));
+
+        $filename = sprintf('Repporting-%s.pdf', date('Y-m-d'));
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type'        => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            ]
+        );
     }
 
 

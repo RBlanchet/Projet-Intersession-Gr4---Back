@@ -46,7 +46,9 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     protected $password;
-
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
     protected $plainPassword;
 
     /**
