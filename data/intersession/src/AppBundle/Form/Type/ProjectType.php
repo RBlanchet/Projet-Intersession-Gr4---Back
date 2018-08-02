@@ -11,7 +11,7 @@ namespace AppBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class ProjectType extends AbstractType
@@ -24,14 +24,10 @@ class ProjectType extends AbstractType
         $builder->add('price');
         $builder->add('cost');
         $builder->add('hour_pool');
-        //$builder->add('hour_spend');
-        $builder->add('date_start', null, array(
-            'mapped' => false,
-        ));
-        $builder->add('date_end', null, array(
-            'mapped' => false,
-        ));
-        //$builder->add('active', CheckboxType::class);
+        $builder->add('hour_spend');
+        $builder->add('date_start',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
+        $builder->add('date_end',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
+        $builder->add('active', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

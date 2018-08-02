@@ -11,6 +11,20 @@ use AppBundle\Form\Type\TaskStatusType;
 use AppBundle\Entity\TaskStatus;
 
 class TaskStatusController extends Controller {
+
+    /**
+     * @Rest\View(serializerGroups={"taskStatus"})
+     * @Rest\Get("/task-status")
+     */
+    public function getTaskListStatusAction()
+    {
+        $taskStatus = $this->get('doctrine.orm.entity_manager')
+            ->getRepository(TaskStatus::class)
+            ->findAll();
+
+        return $taskStatus;
+    }
+
     /**
      * @Rest\View(serializerGroups={"task"})
      * @Rest\Get("/tasks/{id}/status")

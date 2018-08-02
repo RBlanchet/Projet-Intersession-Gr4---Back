@@ -21,11 +21,7 @@ class TaskType extends AbstractType
         $builder->add('status');
         $builder->add('start_at',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
         $builder->add('end_at',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
-        $builder->add('users', CollectionType::class,[
-            'entry_type'        => UserType::class,
-            'allow_add'         => true,
-            'error_bubbling'    =>false,
-            ]);
+        $builder->add('users');
     }
     public function configureOptions(OptionsResolver $resolver)
     {

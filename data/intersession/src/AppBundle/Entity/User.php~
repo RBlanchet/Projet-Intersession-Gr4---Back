@@ -65,6 +65,11 @@ class User implements UserInterface
     protected $email;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $active;
+
+    /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
      */
     private $projects;
@@ -78,18 +83,13 @@ class User implements UserInterface
     private $tasks;
 
     /**
-     *  @ORM\OneToMany(targetEntity="AppBundle\Entity\Role", mappedBy="user")
-     */
-
-    private $protectedRoles;
-
-    /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="users")
      */
     private $meetings;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Job")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $job;
 
@@ -208,32 +208,6 @@ class User implements UserInterface
     public function removeTask(\AppBundle\Entity\Task $task)
     {
         return $this->tasks->removeElement($task);
-    }
-
-    /**
-     * Add protectedRole.
-     *
-     * @param \AppBundle\Entity\Role $protectedRole
-     *
-     * @return User
-     */
-    public function addProtectedRole(\AppBundle\Entity\Role $protectedRole)
-    {
-        $this->protectedRoles[] = $protectedRole;
-
-        return $this;
-    }
-
-    /**
-     * Remove protectedRole.
-     *
-     * @param \AppBundle\Entity\Role $protectedRole
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeProtectedRole(\AppBundle\Entity\Role $protectedRole)
-    {
-        return $this->protectedRoles->removeElement($protectedRole);
     }
 
     /**
@@ -360,4 +334,21 @@ class User implements UserInterface
     {
         $this->plainPassword = $plainPassword;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
 }

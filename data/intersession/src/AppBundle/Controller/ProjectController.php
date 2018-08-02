@@ -50,8 +50,8 @@ class ProjectController extends BaseController
 
         $form->submit($request->request->all());
 
-        $dateStart = $this->stringToDatetime($request->request->all()['date_start']);
-        $dateEnd = $this->stringToDatetime($request->request->all()['date_end']);
+        $dateStart = $request->request->all()['date_start'];
+        $dateEnd = $request->request->all()['date_end'];
 
         $validate = $this->checkDateValidate($dateStart, $dateEnd);
 
@@ -60,28 +60,21 @@ class ProjectController extends BaseController
             // Project
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
-            $project->setDateStart($dateStart);
-            $project->setDateEnd($dateEnd);
+            $project->setDateStart($this->stringToDatetime($dateStart));
+            $project->setDateEnd($this->stringToDatetime($dateEnd));
             $project->setActive(true);
             $project->addUser($this->getUser());
             if (isset($request->request->all()['hour_pool'])) {
                 $project->setHourPool($request->request->all()['hour_pool']);
-            } else {
-                $project->setHourPool(0);
+            }
+              else {
+                $project->setHourPool($this->timeSpend($dateStart, $dateEnd));
             }
             $project->setHourSpend(0);
             $em->persist($project);
 
             // Job
             $job = $em->getRepository('AppBundle:Job')->find(1);
-
-            // Role
-            $role->setProject($project);
-            $role->setUser($this->getUser());
-            $role->setJob($job);
-            $role->setCost(500);
-
-            $em->persist($role);
             $em->flush();
 
             return $project;
@@ -127,16 +120,6 @@ class ProjectController extends BaseController
 
     public function patchProjectAction(Request $request)
     {
-        return $this->updateProject($request, false);
-    }
-
-    /**
-     * @param Request $request
-     * @param $clearMissing
-     * @return Project|\FOS\RestBundle\View\View|\Symfony\Component\Form\FormInterface
-     */
-    private function updateProject(Request $request, $clearMissing)
-    {
         $project = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:Project')
             ->find($request->get('id'));
@@ -146,49 +129,77 @@ class ProjectController extends BaseController
             return $this->projectNotFound();
         }
 
-        if ($clearMissing) {
-            $options = ['validation_groups'=>['Default', 'FullUpdate']];
-        } else {
-            $options = [];
-        }
+        $form = $this->createForm(ProjectType::class, $project);
 
-        $form = $this->createForm(ProjectType::class, $project, $options);
-
-        $form->submit($request->request->all(), $clearMissing);
+        $form->submit($request->request->all(), false);
         if (isset($request->request->all()['active'])){
             $active = $request->request->all()['active'];
         }
-        if (isset($request->request->all()['date_start'])) {
+        else{
+            $active = true;
+        }
+
+        if (array_key_exists('date-start', $request->request->all())) {
             $startAt = $this->stringToDatetime($request->request->all()['date_start']);
-        } else {
-            $startAt = true;
         }
-
-        if (isset($request->request->all()['date_end'])) {
-            $endAt = $this->stringToDatetime($request->request->all()['date_end']);
-        } else {
-            $endAt = true;
+        if (array_key_exists('date_end', $request->request->all())) {
+            $endAt =$this->stringToDatetime($request->request->all()['date_end']);
         }
-
-        if ($form->isValid() && $startAt && $endAt) {
+        if (array_key_exists( 'cost',$request->request->all())){
+            $cost = $request->request->all()['cost'];
+        }
+        if (array_key_exists('hour_spend',$request->request->all())){
+            $hours = $request->request->all()['hour_spend'];
+        }
+        if (array_key_exists('hour_pool',$request->request->all())){
+            $pool = $request->request->all()['hour_pool'];
+        }
+        if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
+            $users = count($project->getUsers());
             if ($active == false){
                 $this->exportPDF($project);
             }
-            if (is_object($startAt)) {
+            if ($startAt) {
                 $project->setDateStart($startAt);
             }
-            if (is_object($endAt)) {
+            if ($endAt) {
                 $project->setDateEnd($endAt);
             }
-
+            if (!$pool && ($startAt || $endAt)){
+                $project->setHourPool($this->timeSpend($this->stringToDatetime($project->getDateStart()),$this->stringToDatetime($project->getDateEnd())));
+            }
+            if ($hours){
+                $project->setHourSpend($hours);
+            }
+            else {
+                $hours = 0;
+                $double = false;
+                if(!$cost){
+                    $cost = 0;
+                    $double = true;
+                }
+                foreach($project->getTasks() as $task)
+                {
+                    $hours += $task->getTimeSpend();
+                    if($double){
+                        $cost += $task->getCost();
+                    }
+                }
+                $project->setHourSpend($hours);
+                if ($cost != 0){
+                    $project->setCost($cost);
+                }
+            }
+            if ($cost !=""){
+                $project->setCost($cost);
+            }
             $em->merge($project);
             $em->flush();
 
             return $project;
-        } elseif (!$startAt || !$endAt) {
-            return View::create(["message" => "Le format des dates n'est pas compatible."], 500);
-        } else {
+        }
+        else {
             return $form;
         }
     }
@@ -221,6 +232,20 @@ class ProjectController extends BaseController
             return $this->projectNotFound();
         }
         return $projects;
+    }
+    /**
+     * @Rest\View(serializerGroups={"project"})
+     * @Rest\Get("/projects/{id}/users")
+     */
+    public function getUsersByProjectAction(Request $request){
+        $project = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:Project')
+            ->find($request->get('id')); // L'identifiant en tant que paramètre n'est plus nécessaire
+        /* @var $project Project */
+        if (empty($project)) {
+            return $this->projectNotFound();
+        }
+        return $project->getUsers();
     }
 
     /**

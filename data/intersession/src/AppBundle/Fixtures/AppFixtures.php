@@ -316,6 +316,28 @@ class AppFixtures extends Fixture
             ),
         );
 
+        // Tasks Status
+
+        $status = array(
+            1 => ['En cours',50],
+            2 => ['A faire',0],
+            3 => ['Finit',75],
+            4 => ['Validée',100]
+        );
+
+        $taskStatusArray = array();
+
+        foreach ($status as $k => $v) {
+            $taskStatus = new TaskStatus();
+            $taskStatus->setTitle($v[0]);
+            $taskStatus->setPercentage($v[1]);
+
+            $manager->persist($taskStatus);
+            $manager->flush();
+
+            array_push($taskStatusArray, $taskStatus);
+        }
+
         $tasksArray = array();
 
         foreach ($tasks as $k => $v) {
@@ -339,31 +361,11 @@ class AppFixtures extends Fixture
             $task->setCreatedBy($userArray[rand(0, count($userArray) - 1)]->getId());
             $task->setTimeSpend(rand(20, 200));
             $task->setActive(true);
-            $task->setStatus(rand(1,4));
+            $task->setStatus($taskStatusArray[rand(0,3)]);
 
             $manager->persist($task);
 
             array_push($tasksArray, $task);
-        }
-
-        $manager->flush();
-
-
-        // Tasks Status
-
-        $status = array(
-            1 => 'En cours',
-            2 => 'A faire',
-            3 => 'Finit',
-            4 => 'Validée'
-        );
-
-        foreach ($tasksArray as $k => $v) {
-            $taskStatus = new TaskStatus();
-            $taskStatus->setTask($v);
-            $taskStatus->setTitle($status[rand(1, 4)]);
-
-            $manager->persist($taskStatus);
         }
 
         $manager->flush();
