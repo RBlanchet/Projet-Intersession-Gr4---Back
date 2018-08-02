@@ -93,5 +93,8 @@ php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
 php bin/console doctrine:fixtures:load
 
+composer require h4cc/wkhtmltopdf-amd64
+
+sudo apt-get install libxrender1 libfontconfig
 
 
