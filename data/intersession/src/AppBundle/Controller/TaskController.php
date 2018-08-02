@@ -347,10 +347,9 @@ class TaskController extends BaseController
         if (!$task) {
             return;
         }
-        $status = $task->getStatus;
         if ($task) {
-            $em->remove($status);
-            $em->remove($task);
+            $task->setActive(false);
+            $em->persist($task);
             $em->flush();
         }
     }

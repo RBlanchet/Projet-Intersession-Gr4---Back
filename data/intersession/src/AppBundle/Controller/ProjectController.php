@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use AppBundle\Controller\BaseController;
 
 //Repository
+use AppBundle\Entity\Job;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Repository\ProjectRepository;
@@ -48,22 +49,25 @@ class ProjectController extends BaseController
 
         $role = new Role();
 
-        $form->submit($request->request->all());
+        $data = $request->request->all();
 
-        $dateStart = $request->request->all()['date_start'];
-        $dateEnd = $request->request->all()['date_end'];
+        $data['date_start'] = $this->stringToDatetime($request->request->all()['date_start']);
+        $data['date_end']   = $this->stringToDatetime($request->request->all()['date_end']);
 
-        $validate = $this->checkDateValidate($dateStart, $dateEnd);
+        $form->submit($data);
+
+        $validate = $this->checkDateValidate($data['date_start'], $data['date_end'] );
 
         if ($form->isValid() && !is_array($validate)) {
             $em = $this->get('doctrine.orm.entity_manager');
             // Project
             $project->setCreatedAt(new \DateTime('now'));
             $project->setCreatedBy($this->getUser()->getId());
-            $project->setDateStart($this->stringToDatetime($dateStart));
-            $project->setDateEnd($this->stringToDatetime($dateEnd));
             $project->setActive(true);
             $project->addUser($this->getUser());
+
+            $job = $em->getRepository(Job::class)->find(1);
+
             if (isset($request->request->all()['hour_pool'])) {
                 $project->setHourPool($request->request->all()['hour_pool']);
             }
@@ -71,11 +75,23 @@ class ProjectController extends BaseController
                 $project->setHourPool($this->timeSpend($dateStart, $dateEnd));
             }
             $project->setHourSpend(0);
+
             $em->persist($project);
+
+            $em->flush();
+
+            $role = new Role();
+            $role->setProject($project);
+            $role->setUser($this->getUser());
+            $role->setCost(0);
+            $role->setJob($job);
+
+            $em->persist($role);
+
+            $em->flush();
 
             // Job
             $job = $em->getRepository('AppBundle:Job')->find(1);
-            $em->flush();
 
             return $project;
         } elseif (is_array($validate)) {

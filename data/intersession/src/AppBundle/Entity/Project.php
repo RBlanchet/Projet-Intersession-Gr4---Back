@@ -104,9 +104,15 @@ class Project
         $this->meetings = new ArrayCollection();
     }
 
-    public function getTasks(): Collection
+    public function getTasks()
     {
-        return $this->tasks;
+        $array = array();
+        foreach ($this->tasks as $task) {
+            if ($task->getActive()) {
+                array_push($array, $task);
+            }
+        }
+        return $array;
     }
 
     public function getSprints(): Collection

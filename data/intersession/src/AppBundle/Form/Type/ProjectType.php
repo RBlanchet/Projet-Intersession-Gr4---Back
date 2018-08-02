@@ -25,8 +25,8 @@ class ProjectType extends AbstractType
         $builder->add('cost');
         $builder->add('hour_pool');
         $builder->add('hour_spend');
-        $builder->add('date_start',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
-        $builder->add('date_end',DateType::class, array('widget' => 'single_text', 'format' => 'yyyy-MM-dd'));
+        $builder->add('date_start');
+        $builder->add('date_end');
         $builder->add('active', CheckboxType::class);
     }
 
