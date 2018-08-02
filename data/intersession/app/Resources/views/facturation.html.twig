@@ -1,16 +1,106 @@
-<h2>Compte rendus:</h2>
-<h3>
-    Projet : {{ name }}
-</h3>
-<div>
-    Récapitulatif du projet:<br><br>
+<html>
+<head>
+    <style>
+        body,html{
+            margin: 50px;
+        }
+        h2{
+            margin-top: 15px;
+        }
+        div{
+            margin-left: 15px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            height: 45px;
+        }
+        th,td:first-child{
+            padding-left: 10px;
+            background: whitesmoke;
+        }
+        td:last-child{
+            text-align: center;
+        }
+        #header{
+            margin: 0;
+            background: #0288D1;
+            color: white;
+            border-radius: 3px;
+            text-align: center;
+            padding: 15px;
+            font-size: 17;
+        }
+    </style>
+</head>
+<body>
 
-    Prix facturation client: {{ budget }}<br>
-    Durée (en heure) : {{ duration }}<br>
-    Prix réel: {{ cost }}<br>
-    Date de début: {{ start|date('Y-m-d') }}<br>
-    Date de fin: {{ end|date('Y-m-d')}}<br>
+<div id="header">
+    AmaGantt
+</div>
+
+<h2>Récapitulatif du projet </h2>
+<div>{{ name }}</div>
+<h3>le {{ export_date|date('Y-m-d') }}</h3>
+
+<h2>Activité</h2>
+<div>
+    {% if actif %}
+        En cours
+        {% else %}
+        Terminer
+    {% endif %}
+
+</div>
+<h2>Généralitées</h2>
+<div>
+    <table style="width:100%">
+        <tr>
+            <th>Intitulé</th>
+            <th>Données</th>
+        </tr>
+        <tr>
+            <td>Prix réel</td>
+            <td>{{ cost }}€</td>
+        </tr>
+        <tr>
+            <td>Prix facturé </td>
+            <td>{{ budget }}€</td>
+        </tr>
+        <tr>
+            <td>Durée réel </td>
+            <td>{{ duration }}Heures</td>
+        </tr>
+        <tr>
+            <td>Durée facturé </td>
+            <td>{{ pool }}Heures</td>
+        </tr>
+        <tr>
+            <td>Date de début</td>
+            <td>{{ start|date('Y-m-d') }}</td>
+        </tr>
+        <tr>
+            <td>Date de fin</td>
+            <td>{{ end|date('Y-m-d')}}</td>
+        </tr>
+    </table>
+</div>
+
+<h2>L'équipe</h2>
+<div>
+    {% for user in team %}
+        <p> {{ user.firstname|e }} {{ user.lastname|e }} </p>
+    {% endfor %}
+</div>
+
+<h2>Bilan</h2>
+<div>
+    <p>Reste: {{ budget-cost }}€</p>
+    <p>Reste: {{ pool-duration }}h</p>
 </div>
 <br><br><br>
 Thank you for using Amagantt !<br>
 See you soon
+
+</body>
+</html>

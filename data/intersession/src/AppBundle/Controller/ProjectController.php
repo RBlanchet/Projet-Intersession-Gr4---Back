@@ -237,6 +237,10 @@ class ProjectController extends BaseController
                 'start'     => $project->getDateStart(),
                 'end'       => $project->getDateEnd(),
                 'duration'  => $project->getHourSpend(),
+                'pool'      => $project->getHourPool(),
+                'team'      => $project->getUsers(),
+                'actif'      => $project->getActive(),
+                'export_date' => new \DateTime('now')
             ));
 
         $filename = sprintf('Repporting-%s.pdf', date('Y-m-d'));
@@ -290,26 +294,26 @@ class ProjectController extends BaseController
         return $projects;
     }
 
-    public function exportPDF(Project $project){
-        $snappy = $this->get('knp_snappy.pdf');
-        $html = $this->renderView('facturation.html.twig', array(
-            'budget'    => $project->getPrice(),
-            'cost'      => $project->getCost(),
-            'name'      => $project->getName(),
-            'start'     => $project->getDateStart(),
-            'end'       => $project->getDateEnd(),
-            'duration'  => $project->getHourSpend(),
-        ));
-
-        $filename = "exportProject" . $project->getName();
-
-        return new Response(
-            $snappy->getOutputFromHtml($html),
-            200,
-            array(
-                'Content-Type'          =>'application/pdf',
-                'Content-Disposition'   => 'inline; filename="' . $filename.'.pdf"'
-            )
-        );
-    }
+//    public function exportPDF(Project $project){
+//        $snappy = $this->get('knp_snappy.pdf');
+//        $html = $this->renderView('facturation.html.twig', array(
+//            'budget'    => $project->getPrice(),
+//            'cost'      => $project->getCost(),
+//            'name'      => $project->getName(),
+//            'start'     => $project->getDateStart(),
+//            'end'       => $project->getDateEnd(),
+//            'duration'  => $project->getHourSpend(),
+//        ));
+//
+//        $filename = "exportProject" . $project->getName();
+//
+//        return new Response(
+//            $snappy->getOutputFromHtml($html),
+//            200,
+//            array(
+//                'Content-Type'          =>'application/pdf',
+//                'Content-Disposition'   => 'inline; filename="' . $filename.'.pdf"'
+//            )
+//        );
+//    }
 }
