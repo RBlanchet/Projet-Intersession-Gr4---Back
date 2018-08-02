@@ -319,17 +319,18 @@ class AppFixtures extends Fixture
         // Tasks Status
 
         $status = array(
-            1 => 'En cours',
-            2 => 'A faire',
-            3 => 'Finit',
-            4 => 'Validée'
+            1 => ['En cours',50],
+            2 => ['A faire',0],
+            3 => ['Finit',75],
+            4 => ['Validée',100]
         );
 
         $taskStatusArray = array();
 
         foreach ($status as $k => $v) {
             $taskStatus = new TaskStatus();
-            $taskStatus->setTitle($v);
+            $taskStatus->setTitle($v[0]);
+            $taskStatus->setPercentage($v[1]);
 
             $manager->persist($taskStatus);
             $manager->flush();
