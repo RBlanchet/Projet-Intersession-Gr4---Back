@@ -50,6 +50,7 @@ sudo apt-get install debconf-utils -y > /dev/null
 debconf-set-selections <<< "mysql-server mysql-server/root_password password root"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password root"
 sudo apt-get install mysql-server mysql-client mysql-common -y > /dev/null
+sudo apt-get install libxrender1 libfontconfig 
 echo "UPDATE"
 sudo apt-get update
 # On active le mode Rewrite
