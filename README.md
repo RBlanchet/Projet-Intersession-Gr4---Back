@@ -1,5 +1,8 @@
 # Configuration du serveur
 
+## Wiki
+* https://github.com/RBlanchet/Projet-Intersession-Gr4---Back/wiki/Documentation-utilisateur
+
 ## Réécriture d'url
 * /etc/apache2/site-available/000-default.conf
 * rajouter
